@@ -1,11 +1,11 @@
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  1
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
                       00001         LIST            p=16F887                        
-                      00002         INCLUDE         P16F887.INC             
+                      00002         INCLUDE         P16F887.INC     
                       00001         LIST
                       00002 
                       00003 ;==========================================================================
@@ -15,179 +15,1074 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00007 ;==========================================================================
                       00008 
                       00809         LIST
-2007   3FF0           00003         __CONFIG _CONFIG1, _CP_OFF&_WDT_OFF&_XT_OSC&_INTOSCIO   
-                      00004         errorlevel       -302
-                      00005 
-Message[313]: CBLOCK constants will start with a value of 0.
-                      00006         CBLOCK
-  00000000            00007                 aleatorio ; contendra numeros entre 1 y 16
-  00000001            00008                 contador  ; contador de retardos
-                      00009         ENDC
-                      00010 
-                      00011            org  0x00                    ; vector de reset
-0000   2???           00012        goto     main                        ; salto a label "main"
-                      00013        ;Org     0x04                        ; vector de interrupción  
-                      00014        ;Goto    interrupcion            ; salto a interrupción
-                      00015        ;org     0x05                        ; continuación de programa
-                      00016         
-                      00017 ;***************************************************************************
-0001                  00018 main
-0001   1683 1303      00019         BANKSEL TRISA
-0003   30FF           00020         MOVLW   B'11111111'
-0004   0085           00021         MOVWF   TRISA
-0005   0187           00022         CLRF    TRISC   ;puerto D y C envian señales a la matriz de leds
-0006   0188           00023         CLRF    TRISD
-0007   30FF           00024         MOVLW   B'11111111'
-0008   0086           00025         MOVWF   TRISB
-                      00026         ;banksel        PORTB   
-                      00027    ;clrf                PORTB
-0009   1283 1303      00028    banksel      PORTC   
-000B   0187           00029    clrf         PORTC
-000C   1283 1303      00030    banksel      PORTD
-000E   0188           00031    clrf         PORTD
-000F   3004           00032         MOVLW   .4
-0010   0080           00033         MOVWF   aleatorio
-0011   0181           00034         CLRF    contador
-                      00035 
-0012                  00036 lazo1
-                      00037         ; sector1
-                      00038         ;nop
-                      00039         ;call    retardo
-                      00040     ;movlw   b'11000000'        
-                      00041         ;movwf  PORTD
-                      00042         ;movlw   b'00111111'    
-                      00043         ;movwf  PORTC
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  2
+                      00003         INCLUDE     Macro_Delays.INC
+                      00001 ;;------------------------------------------------------------------------------------
+                      00002 ;;
+                      00003 ;; En esta libreria definimos las macros para los retardos usados en las librerias:
+                      00004 ;; delay_s.INC, delay_ms.INC y delay_us.INC. Con ello con las simples instrucciones
+                      00005 ;; Definidas en las macros, podemos hacer mas leible y facil la programacion de nuestros
+                      00006 ;; retardos en ensamblador.
+                      00007 ;;
+                      00008 ;;-----------------------------------------------------------------------------------
+                      00009 ;; ADVERTENCIA: Recordad llamar esta libreria antes que las librerias con los retardos,
+                      00010 ;; caso contrario, el compilador les dara un error.
+                      00011 ;;-----------------------------------------------------------------------------------
+                      00012 
+                      00013 
+                      00014 ;; Definicion de las macros para los retardos
+                      00015                 
+                      00016 Delay_s  MACRO  Tiempo_delay
+                      00017                 movlw   Tiempo_delay
+                      00018                 call    Delay_s_0
+                      00019                 ENDM            
+                      00020 
+                      00021 Delay_ms  MACRO  Tiempo_delay
+                      00022                 movlw   Tiempo_delay
+                      00023                 call    delay_ms_0
+                      00024                 ENDM            
+                      00025                 
+                      00026 Delay_us  MACRO  Tiempo_delay
+                      00027                 movlw   Tiempo_delay
+                      00028                 call    Delay_us_0
+                      00029                 ENDM            
+                      00030                 
+                      00031 ;;--------------------------------------------------------------------------------
+                      00004         
+2007   3FF0           00005         __CONFIG _CONFIG1, _CP_OFF&_WDT_OFF&_XT_OSC&_INTOSCIO   
+                      00006         errorlevel       -302
+Warning[207]: Found label after column 1. (CLOCK)
+  04000000            00007         CLOCK equ 4000000
+                      00008         CBLOCK 0x20
+  00000020            00009                 aleatorio    ; contendra numeros entre 1 y 16
+  00000021            00010                 contador     ; contador de retardos
+  00000022            00011                 temporizador ; contador de interrupciones
+  00000023            00012                 nivel
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00044         
-                      00045         ;sector2
-                      00046         ;nop
-                      00047         ;call    retardo
-                      00048     ;movlw   b'00110000'        
-                      00049         ;movwf  PORTD
-                      00050         ;movlw   b'00111111'    
-                      00051         ;movwf  PORTC
-                      00052         
-                      00053         ;sector3
-                      00054         ;nop
-                      00055         ;call    retardo
-                      00056     ;movlw   b'00001100'        
-                      00057         ;movwf  PORTD
-                      00058         ;movlw   b'00111111'    
-                      00059         ;movwf  PORTC
-                      00060         
-                      00061         ;scetor4
-                      00062         ;nop
-                      00063         ;call    retardo
-                      00064     ;movlw   b'00000011'        
-                      00065         ;movwf  PORTD
-                      00066         ;movlw   b'00111111'    
-                      00067         ;movwf  PORTC
-                      00068         ;goto   lazo1
-                      00069         
-                      00070         ;sector5
-                      00071         ;nop
-                      00072         ;call    retardo
-                      00073     ;movlw   b'11000000'        
-                      00074         ;movwf  PORTD
-                      00075         ;movlw   b'11001111'    
-                      00076         ;movwf  PORTC
-                      00077         
-                      00078         ;sector6
-                      00079         ;nop
-                      00080         ;call    retardo
-                      00081     ;movlw   b'00110000'        
-                      00082         ;movwf  PORTD
-                      00083         ;movlw   b'11001111'    
-                      00084         ;movwf  PORTC
-                      00085 
-                      00086         ;sector7
-                      00087         ;nop
-                      00088         ;call    retardo
-                      00089     ;movlw   b'00001100'        
-                      00090         ;movwf  PORTD
-                      00091         ;movlw   b'11001111'    
-                      00092         ;movwf  PORTC
-                      00093 
-                      00094         ;sector8
-                      00095         ;nop
-                      00096         ;call    retardo
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  3
+  00000024            00013                 dato
+  00000025            00014                 cont_mul
+  00000026            00015                 operando
+  00000027            00016                 topo 
+  00000028            00017                 cont_1
+  00000029            00018                 cont_2
+  0000002A            00019                 cont_3
+  0000002B            00020                 cont_4
+  0000002C            00021                 cont_5
+  0000002D            00022                 cont_6
+  0000002E            00023                 cont_7
+  0000002F            00024                 cont_8
+                      00025         ENDC
+                      00026 
+                      00027            org  0x00                    ; vector de reset
+0000   2???           00028        goto     main                        ; salto a label "main"
+                      00029        org      0x04                        ; vector de interrupción  
+0004   2???           00030        goto     interrupcion            ; salto a interrupción
+                      00031        org      0x05                        ; continuación de programa
+                      00032 
+                      00033 ;***************************************************************************
+                      00034 ;****                          GENERAR_RANDOM                            ***
+                      00035 ;***************************************************************************
+0005                  00036 generar_random
+0005   0822           00037         movf  temporizador,w  ; cargo el valor del timer0 en W, para generar el numero aleatorio
+0006   390F           00038         andlw 0x0F                        ; obtengo los 4 bits menos significativos que va a representar
+                             un numero entre 0 y 15, lo guarda en W
+0007   00A0           00039         movwf aleatorio
+                      00040         ;****** es igual a 15 *******
+0008   300F           00041         movlw 0x0F ; 15
+0009   0620           00042         xorwf aleatorio,W
+000A   1903           00043         btfsc STATUS,2
+000B   2???           00044         call sector16
+000C   2???           00045         goto $+1
+                      00046         ;****** es igual a 14 *******
+000D   300E           00047         movlw 0x0E ; 14
+000E   0620           00048         xorwf aleatorio,W
+000F   1903           00049         btfsc STATUS,2
+0010   2???           00050         call sector15
+0011   2???           00051         goto $+1
+                      00052         ;****** es igual a 13 *******
+0012   300D           00053         movlw 0x0D ; 13
+0013   0620           00054         xorwf aleatorio,W
+0014   1903           00055         btfsc STATUS,2
+0015   2???           00056         call sector14
+0016   2???           00057         goto $+1
+                      00058         ;****** es igual a 12 *******
+0017   300C           00059         movlw 0x0C ; 12
+0018   0620           00060         xorwf aleatorio,W
+0019   1903           00061         btfsc STATUS,2
+001A   2???           00062         call sector13
+001B   2???           00063         goto $+1
+                      00064         ;****** es igual a 11 *******
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00097     ;movlw   b'00000011'        
-                      00098         ;movwf  PORTD
-                      00099         ;movlw   b'11001111'    
-                      00100         ;movwf  PORTC
-                      00101 
-                      00102         ;scetor9
-                      00103         ;nop
-                      00104         ;call    retardo
-                      00105     ;movlw   b'11000000'        
-                      00106         ;movwf  PORTD
-                      00107         ;movlw   b'11110011'    
-                      00108         ;movwf  PORTC
-                      00109 
-                      00110         ;sector10
-                      00111         ;nop
-                      00112         ;call    retardo
-                      00113     ;movlw   b'00110000'        
-                      00114         ;movwf  PORTD
-                      00115         ;movlw   b'11110011'    
-                      00116         ;movwf  PORTC
-                      00117 
-                      00118         ;sector11
-                      00119         ;nop
-                      00120         ;call    retardo
-                      00121     ;movlw   b'00001100'        
-                      00122         ;movwf  PORTD
-                      00123         ;movlw   b'11110011'    
-                      00124         ;movwf  PORTC
-                      00125 
-                      00126         ;sector 12 
-                      00127         ;nop
-                      00128         ;call    retardo
-                      00129     ;movlw   b'00000011'        
-                      00130         ;movwf  PORTD
-                      00131         ;movlw   b'11110011'    
-                      00132         ;movwf  PORTC
-                      00133 
-                      00134         ;sector13
-0012   0000           00135         nop
-0013   2???           00136         call    retardo
-0014   30C0           00137     movlw   b'11000000' 
-0015   0088           00138         movwf   PORTD
-0016   30FC           00139         movlw   b'11111100'     
-0017   0087           00140         movwf   PORTC
-                      00141 ;***************************************************************************
-                      00142 
-                      00143 
+001C   300B           00065         movlw 0x0B ; 11
+001D   0620           00066         xorwf aleatorio,W
+001E   1903           00067         btfsc STATUS,2
+001F   2???           00068         call sector12
+0020   2???           00069         goto $+1
+                      00070         ;****** es igual a 10 *******
+0021   300A           00071         movlw 0x0A ; 10
+0022   0620           00072         xorwf aleatorio,W
+0023   1903           00073         btfsc STATUS,2
+0024   2???           00074         call sector11
+0025   2???           00075         goto $+1
+                      00076         ;****** es igual a 9 *******
+0026   3009           00077         movlw 0x09 ; 9
+0027   0620           00078         xorwf aleatorio,W
+0028   1903           00079         btfsc STATUS,2
+0029   2???           00080         call sector10
+002A   2???           00081         goto $+1
+                      00082         ;****** es igual a 8 *******
+002B   3008           00083         movlw 0x08 ; 8
+002C   0620           00084         xorwf aleatorio,W
+002D   1903           00085         btfsc STATUS,2
+002E   2???           00086         call sector9
+002F   2???           00087         goto $+1
+                      00088         ;****** es igual a 7 *******
+0030   3007           00089         movlw 0x07 ; 7
+0031   0620           00090         xorwf aleatorio,W
+0032   1903           00091         btfsc STATUS,2
+0033   2???           00092         call sector8
+0034   2???           00093         goto $+1
+                      00094         ;****** es igual a 6 *******
+0035   3006           00095         movlw 0x06 ; 6
+0036   0620           00096         xorwf aleatorio,W
+0037   1903           00097         btfsc STATUS,2
+0038   2???           00098         call sector7
+0039   2???           00099         goto $+1
+                      00100         ;****** es igual a 5 *******
+003A   3005           00101         movlw 0x05 ; 5
+003B   0620           00102         xorwf aleatorio,W
+003C   1903           00103         btfsc STATUS,2
+003D   2???           00104         call sector6
+003E   2???           00105         goto $+1
+                      00106         ;****** es igual a 4 *******
+003F   3004           00107         movlw 0x04 ; 4
+0040   0620           00108         xorwf aleatorio,W
+0041   1903           00109         btfsc STATUS,2
+0042   2???           00110         call sector5
+0043   2???           00111         goto $+1
+                      00112         ;****** es igual a 3 *******
+0044   3003           00113         movlw 0x03 ; 3
+0045   0620           00114         xorwf aleatorio,W
+0046   1903           00115         btfsc STATUS,2
+0047   2???           00116         call sector4
+0048   2???           00117         goto $+1
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00118         ;****** es igual a 2 *******
+0049   3002           00119         movlw 0x02 ; 2
+004A   0620           00120         xorwf aleatorio,W
+004B   1903           00121         btfsc STATUS,2
+004C   2???           00122         call sector3
+004D   2???           00123         goto $+1
+                      00124         ;****** es igual a 1 *******
+004E   3001           00125         movlw 0x01 ; 1
+004F   0620           00126         xorwf aleatorio,W
+0050   1903           00127         btfsc STATUS,2
+0051   2???           00128         call sector2
+0052   2???           00129         goto $+1
+                      00130         ;****** es igual a 0 *******
+0053   3000           00131         movlw 0x00 ; 0
+0054   0620           00132         xorwf aleatorio,W
+0055   1903           00133         btfsc STATUS,2
+0056   2???           00134         call sector1
+0057   2???           00135         goto finalizando_random  
+                      00136 
+                      00137 ;***************************************************************************
+                      00138 ;****                        FINALIZANDO_RANDOM                          ***
+                      00139 ;***************************************************************************
+0058                  00140 finalizando_random
+0058   100B           00141         bcf INTCON,RBIF
+0059   2???           00142         goto fin_interrupcion_portb     
+                      00143         
                       00144 ;***************************************************************************
-0018                  00145 retardo
-Message[305]: Using default destination of 1 (file).
-0018   0B81           00146         decfsz  contador
-0019   2???           00147     goto        retardo
-001A   30FF           00148         movlw   0xFF
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  4
+                      00145 ;****                         INTERRUPCION                               ***
+                      00146 ;***************************************************************************
+005A                  00147 interrupcion
+                      00148         ;btfss  INTCON,RBIE     
+005A   2???           00149         goto   interrupcion_timer0
+                      00150         ;goto   Seguir_tmr0          ;aqui va interrupcion_portb
+                      00151 
+                      00152 ;***************************************************************************
+                      00153 ;****                        INTERRUPCION_PORTB                          ***
+                      00154 ;***************************************************************************    
+005B                  00155 interrupciom_portb
+005B   1683 1303      00156         banksel  IOCB
+005D   1816           00157         btfsc    IOCB,0 
+005E   2???           00158         goto  generar_random
+                      00159 
+005F   1896           00160         btfsc    IOCB,1
+0060   2???           00161         goto  generar_random
+                      00162 
+0061   1916           00163         btfsc    IOCB,2
+0062   2???           00164         goto  generar_random
+                      00165 
+0063   1996           00166         btfsc    IOCB,3
+0064   2???           00167         goto  generar_random
+                      00168         
+0065   1A16           00169         btfsc    IOCB,4
+0066   2???           00170         goto  generar_random
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-001B   0081           00149         movwf   contador
-001C   0008           00150     return
-                      00151 
-                      00152         
-Warning[205]: Found directive in column 1. (end)
-3FF0                  00153 end
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  5
+                      00171 
+0067   1A96           00172         btfsc    IOCB,5
+0068   2???           00173         goto  generar_random
+                      00174 
+0069   1B16           00175         btfsc    IOCB,6
+006A   2???           00176         goto  generar_random
+                      00177 
+006B   1B96           00178         btfsc    IOCB,7 
+006C   2???           00179         goto  generar_random
+006D   2???           00180         goto  fin_interrupcion_portb
+                      00181 
+                      00182 ;**************************************************************************
+                      00183 ;****                    FIN_INTERRUPCION_PUERTO_B                      ***
+                      00184 ;**************************************************************************
+006E                  00185 fin_interrupcion_portb
+006E   100B           00186         bcf INTCON,RBIF
+006F   2???           00187         goto salir_interrupcion
+                      00188 
+                      00189 ;**************************************************************************
+                      00190 ;****                     INTERRUPCION_TIMER0                           ***
+                      00191 ;**************************************************************************
+0070                  00192 interrupcion_timer0
+0070   0BA2           00193         decfsz      temporizador,f      ;Decrementa el contador del timer0
+0071   2???           00194     goto                Seguir_tmr0 
+0072   3096           00195         movlw       .150                  ;Cantidad de interrupciones a contar, como es el nivel 1, los 
+                            topos aparecen cada 1.5 segundos.
+0073   00A2           00196         movwf           temporizador  ;Nº de veces a repetir la interrupción    
+0074                  00197 mult
+0074   01A5           00198         clrf cont_mul
+0075   3003           00199         movlw d'3'
+0076   00A5           00200         movwf cont_mul
+0077   0820           00201         movf  aleatorio,W  ; w = aleatorio
+0078   00A6           00202         movwf operando     ; operando = w
+                      00203 ;multiplicacion
+0079   07A6           00204         addwf  operando,F  ; operando lleva la acumulacion de las sumas consecutivas
+007A   0BA5           00205         decfsz cont_mul,F
+007B   2???           00206         goto multiplicacion
+                      00207 
+007C   0824           00208         movf dato,W        ; W = dato 
+007D   0726           00209         addwf operando,W   ; W = operando + dato(que es W)
+007E   390F           00210         andlw 0x0F
+007F   00A7           00211         movwf topo
+                      00212         
+                      00213         ;****** es igual a 15 *******
+0080   300F           00214         movlw 0x0F ; 15
+0081   0627           00215         xorwf topo,W
+0082   1903           00216         btfsc STATUS,2
+0083   2???           00217         call sector16
+0084   2???           00218         goto $+1
+                      00219         ;****** es igual a 14 *******
+0085   300E           00220         movlw 0x0E ; 14
+0086   0627           00221         xorwf topo,W
+0087   1903           00222         btfsc STATUS,2
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0088   2???           00223         call sector15
+0089   2???           00224         goto $+1
+                      00225         ;****** es igual a 13 *******
+008A   300D           00226         movlw 0x0D ; 13
+008B   0627           00227         xorwf topo,W
+008C   1903           00228         btfsc STATUS,2
+008D   2???           00229         call sector14
+008E   2???           00230         goto $+1
+                      00231         ;****** es igual a 12 *******
+008F   300C           00232         movlw 0x0C ; 12
+0090   0627           00233         xorwf topo,W
+0091   1903           00234         btfsc STATUS,2
+0092   2???           00235         call sector13
+0093   2???           00236         goto $+1
+                      00237         ;****** es igual a 11 *******
+0094   300B           00238         movlw 0x0B ; 11
+0095   0627           00239         xorwf topo,W
+0096   1903           00240         btfsc STATUS,2
+0097   2???           00241         call sector12
+0098   2???           00242         goto $+1
+                      00243         ;****** es igual a 10 *******
+0099   300A           00244         movlw 0x0A ; 10
+009A   0627           00245         xorwf topo,W
+009B   1903           00246         btfsc STATUS,2
+009C   2???           00247         call sector11
+009D   2???           00248         goto $+1
+                      00249         ;****** es igual a 9 *******
+009E   3009           00250         movlw 0x09 ; 9
+009F   0627           00251         xorwf topo,W
+00A0   1903           00252         btfsc STATUS,2
+00A1   2???           00253         call sector10
+00A2   2???           00254         goto $+1
+                      00255         ;****** es igual a 8 *******
+00A3   3008           00256         movlw 0x08 ; 8
+00A4   0627           00257         xorwf topo,W
+00A5   1903           00258         btfsc STATUS,2
+00A6   2???           00259         call sector9
+00A7   2???           00260         goto $+1
+                      00261         ;****** es igual a 7 *******
+00A8   3007           00262         movlw 0x07 ; 7
+00A9   0627           00263         xorwf topo,W
+00AA   1903           00264         btfsc STATUS,2
+00AB   2???           00265         call sector8
+00AC   2???           00266         goto $+1
+                      00267         ;****** es igual a 6 *******
+00AD   3006           00268         movlw 0x06 ; 6
+00AE   0627           00269         xorwf topo,W
+00AF   1903           00270         btfsc STATUS,2
+00B0   2???           00271         call sector7
+00B1   2???           00272         goto $+1
+                      00273         ;****** es igual a 5 *******
+00B2   3005           00274         movlw 0x05 ; 5
+00B3   0627           00275         xorwf topo,W
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00B4   1903           00276         btfsc STATUS,2
+00B5   2???           00277         call sector6
+00B6   2???           00278         goto $+1
+                      00279         ;****** es igual a 4 *******
+00B7   3004           00280         movlw 0x04 ; 4
+00B8   0627           00281         xorwf topo,W
+00B9   1903           00282         btfsc STATUS,2
+00BA   2???           00283         call sector5
+00BB   2???           00284         goto $+1
+                      00285         ;****** es igual a 3 *******
+00BC   3003           00286         movlw 0x03 ; 3
+00BD   0627           00287         xorwf topo,W
+00BE   1903           00288         btfsc STATUS,2
+00BF   2???           00289         call sector4
+00C0   2???           00290         goto $+1
+                      00291         ;****** es igual a 2 *******
+00C1   3002           00292         movlw 0x02 ; 2
+00C2   0627           00293         xorwf topo,W
+00C3   1903           00294         btfsc STATUS,2
+00C4   2???           00295         call sector3
+00C5   2???           00296         goto $+1
+                      00297         ;****** es igual a 1 *******
+00C6   3001           00298         movlw 0x01 ; 1
+00C7   0627           00299         xorwf topo,W
+00C8   1903           00300         btfsc STATUS,2
+00C9   2???           00301         call sector2
+00CA   2???           00302         goto $+1
+                      00303         ;****** es igual a 0 *******
+00CB   3000           00304         movlw 0x00 ; 0
+00CC   0627           00305         xorwf topo,W
+00CD   1903           00306         btfsc STATUS,2
+00CE   2???           00307         call sector1
+                      00308         
+00CF   0BA0           00309         decfsz aleatorio, F ;aleatorio = aleatorio - 1
+00D0   2???           00310         goto fin_interrupcion_tmr0
+00D1   0824           00311         movf dato , W
+00D2   00A0           00312         movwf aleatorio
+00D3   2???           00313         goto Seguir_tmr0        
+                      00314 
+00D4                  00315 fin_interrupcion_tmr0   
+00D4   300F           00316         movlw 0x0F
+00D5   0624           00317         xorwf dato,W
+00D6   1D03           00318         btfss STATUS,2 ;verificamos si el resultado logico es igual a cero
+00D7   0AA4           00319         incf dato , F
+00D8   2???           00320         goto Seguir_tmr0
+                      00321         ;goto   multiplicacion
+                      00322         ;btfsc STATUS,C ; pregunto si hay un desbordamiento cuando el resultado es mayor a 255 y menor a
+                             0
+                      00323         
+                      00324         
+                      00325                 
+                      00326         ;movf           unidades,w      ;Ya ocurrieron 150 interrupciones de 10ms(1500ms)
+                      00327         ;call           TABLA
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00328         ;movwf          uni_cod
+                      00329         ;movf           uni_cod,w
+                      00330         ;movwf          PORTB
+                      00331         ;INCF           unidades,f
+                      00332         ;movlw          .10
+                      00333         ;subwf          unidades,w
+                      00334         ;btfss          STATUS,2
+                      00335         ;goto           contando
+                      00336         ;clrf           unidades
+                      00337 
+                      00338 ;contando
+                      00339         ;movlw          .150
+                      00340     ;movwf              contador        ;Repone el contador con 100 
+                      00341 
+00D9                  00342 Seguir_tmr0    
+00D9   30D9           00343         movlw           .217                    
+00DA   0081           00344     movwf               TMR0              ;Repone el TMR0 con 217
+00DB   110B           00345         bcf                 INTCON,T0IF   ;Repone flag del TMR0
+00DC   2???           00346         goto            salir_interrupcion
+00DD                  00347 salir_interrupcion
+00DD   0009           00348     RETFIE                                ;Retorno de interrupción
+                      00349 
+                      00350         
+                      00351 ;***************************************************************************
+                      00352 ;****                                MAIN                                ***
+                      00353 ;***************************************************************************
+00DE                  00354 main
+00DE   1683 1303      00355         BANKSEL TRISA
+00E0   30FF           00356         MOVLW   B'11111111'
+00E1   0085           00357         MOVWF   TRISA   ; puerto A configurado como entrada
+00E2   0187           00358         CLRF    TRISC   ; puerto D y C envian señales a la matriz de leds
+00E3   0188           00359         CLRF    TRISD   ; puerto D y C configurado como salida
+00E4   30FF           00360         MOVLW   B'11111111'
+00E5   0086           00361         MOVWF   TRISB   ; puerto B configurado como entrada
+00E6   1283 1303      00362         banksel PORTB   
+00E8   0186           00363     clrf        PORTB
+00E9   1283 1303      00364     banksel     PORTC   
+00EB   0187           00365     clrf        PORTC
+00EC   1283 1303      00366     banksel     PORTD
+00EE   0188           00367     clrf        PORTD
+00EF   3005           00368         movlw   .5
+00F0   00A4           00369         movwf   dato
+00F1   3004           00370         MOVLW   .4
+00F2   00A0           00371         MOVWF   aleatorio
+00F3   01A1           00372         CLRF    contador
+00F4   01A7           00373         clrf    topo
+                      00374 ;INTERRUPCIONES EN EL REGISTRO INTCON, CAMBIOS DE ESTADO EN EL PUERTO B
+                      00375         ;movlw  b'10001000'
+                      00376         ;movwf  INTCON
+                      00377 ; HABILITO LAS INTERRUPCIONES EN LOS 8 PINES DEL PUERTO B
+                      00378         ;banksel IOCB
+                      00379         ;movlw  b'11111111'
+                      00380         ;movwf  IOCB
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00381 
+00F5                  00382 encendido_de_leds
+00F5   01A8           00383         clrf cont_1
+00F6   01A9           00384         clrf cont_2
+00F7   01AA           00385         clrf cont_3
+00F8   01A5           00386         clrf cont_mul
+00F9   3002           00387         movlw .2
+00FA   00A5           00388         movwf cont_mul
+00FB   0820           00389         movf  aleatorio,0  ; w = aleatorio
+00FC   00A6           00390         movwf operando     ; operando = w
+00FD                  00391 multiplicacion
+00FD   0726           00392         addwf  operando,W  ; operando lleva la acumulacion de las sumas consecutivas
+00FE   0BA5           00393         decfsz cont_mul,F
+00FF   2???           00394         goto multiplicacion
+                      00395 
+0100   00A6           00396         movwf operando
+0101   0824           00397         movf dato,0        ; W = dato 
+0102   0726           00398         addwf operando,W   ; W = operando + dato(que es W)
+0103   390F           00399         andlw 0x0F
+0104   00A7           00400         movwf topo
+                      00401 
+                      00402         ;****** es igual a 15 *******
+0105   300F           00403         movlw 0x0F ; 15
+0106   0627           00404         xorwf topo,W
+0107   1903           00405         btfsc STATUS,2
+0108   2???           00406         goto sector16
+0109   2???           00407         goto $+1
+                      00408         ;****** es igual a 14 *******
+010A   300E           00409         movlw 0x0E ; 14
+010B   0627           00410         xorwf topo,W
+010C   1903           00411         btfsc STATUS,2
+010D   2???           00412         goto sector15
+010E   2???           00413         goto $+1
+                      00414         ;****** es igual a 13 *******
+010F   300D           00415         movlw 0x0D ; 13
+0110   0627           00416         xorwf topo,W
+0111   1903           00417         btfsc STATUS,2
+0112   2???           00418         goto sector14
+0113   2???           00419         goto $+1
+                      00420         ;****** es igual a 12 *******
+0114   300C           00421         movlw 0x0C ; 12
+0115   0627           00422         xorwf topo,W
+0116   1903           00423         btfsc STATUS,2
+0117   2???           00424         goto sector13
+0118   2???           00425         goto $+1
+                      00426         ;****** es igual a 11 *******
+0119   300B           00427         movlw 0x0B ; 11
+011A   0627           00428         xorwf topo,W
+011B   1903           00429         btfsc STATUS,2
+011C   2???           00430         goto sector12
+011D   2???           00431         goto $+1
+                      00432         ;****** es igual a 10 *******
+011E   300A           00433         movlw 0x0A ; 10
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+011F   0627           00434         xorwf topo,W
+0120   1903           00435         btfsc STATUS,2
+0121   2???           00436         goto sector11
+0122   2???           00437         goto $+1
+                      00438         ;****** es igual a 9 *******
+0123   3009           00439         movlw 0x09 ; 9
+0124   0627           00440         xorwf topo,W
+0125   1903           00441         btfsc STATUS,2
+0126   2???           00442         goto sector10
+0127   2???           00443         goto $+1
+                      00444         ;****** es igual a 8 *******
+0128   3008           00445         movlw 0x08 ; 8
+0129   0627           00446         xorwf topo,W
+012A   1903           00447         btfsc STATUS,2
+012B   2???           00448         goto sector9
+012C   2???           00449         goto $+1
+                      00450         ;****** es igual a 7 *******
+012D   3007           00451         movlw 0x07 ; 7
+012E   0627           00452         xorwf topo,W
+012F   1903           00453         btfsc STATUS,2
+0130   2???           00454         goto sector8
+0131   2???           00455         goto $+1
+                      00456         ;****** es igual a 6 *******
+0132   3006           00457         movlw 0x06 ; 6
+0133   0627           00458         xorwf topo,W
+0134   1903           00459         btfsc STATUS,2
+0135   2???           00460         goto sector7
+0136   2???           00461         goto $+1
+                      00462         ;****** es igual a 5 *******
+0137   3005           00463         movlw 0x05 ; 5
+0138   0627           00464         xorwf topo,W
+0139   1903           00465         btfsc STATUS,2
+013A   2???           00466         goto sector6
+013B   2???           00467         goto $+1
+                      00468         ;****** es igual a 4 *******
+013C   3004           00469         movlw 0x04 ; 4
+013D   0627           00470         xorwf topo,W
+013E   1903           00471         btfsc STATUS,2
+013F   2???           00472         goto sector5
+0140   2???           00473         goto $+1
+                      00474         ;****** es igual a 3 *******
+0141   3003           00475         movlw 0x03 ; 3
+0142   0627           00476         xorwf topo,W
+0143   1903           00477         btfsc STATUS,2
+0144   2???           00478         goto sector4
+0145   2???           00479         goto $+1
+                      00480         ;****** es igual a 2 *******
+0146   3002           00481         movlw 0x02 ; 2
+0147   0627           00482         xorwf topo,W
+0148   1903           00483         btfsc STATUS,2
+0149   2???           00484         goto sector3
+014A   2???           00485         goto $+1
+                      00486         ;****** es igual a 1 *******
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+014B   3001           00487         movlw 0x01 ; 1
+014C   0627           00488         xorwf topo,W
+014D   1903           00489         btfsc STATUS,2
+014E   2???           00490         goto sector2
+014F   2???           00491         goto $+1
+                      00492         ;****** es igual a 0 *******
+0150   3000           00493         movlw 0x00 ; 0
+0151   0627           00494         xorwf topo,W
+0152   1903           00495         btfsc STATUS,2
+0153   2???           00496         goto sector1
+                      00497 
+0154                  00498 decrementando_aleatorio 
+0154   0BA0           00499         decfsz aleatorio, F ;aleatorio = aleatorio - 1
+0155   2???           00500         goto incrementando_dato
+0156   0824           00501         movf dato , W
+0157   00A0           00502         movwf aleatorio 
+0158                  00503 incrementando_dato      
+0158   300F           00504         movlw 0x0F
+0159   0624           00505         xorwf dato,W
+015A   1D03           00506         btfss STATUS,2 ;verificamos si el resultado logico es igual a 15, de ser asi lo seteamos a cero
+015B   0AA4           00507         incf dato , F
+015C   2???           00508         goto encendido_de_leds  
+                      00509 
+015D                  00510 lazo
+                      00511         Delay_s .2
+015D   3002               M                 movlw   .2
+015E   2???               M                 call    Delay_s_0
+                      00512         ;call retardo_1s  ;genera retardos de 1 segundo
+015F   2???           00513         goto decrementando_aleatorio
+                      00514          
+                      00515 
+                      00516     ;banksel T2CON
+                      00517         ;movlw b'00000100'  ;habilitar el tmr2
+                      00518 
+                      00519         ;PROGRAMACION DEL TMR0
+                      00520         ;banksel         OPTION_REG  
+                      00521         ;movlw   b'00000111'    ;Programa TMR0 como temporizador
+                      00522         ;movwf   OPTION_REG     ;con preescalador de 256
+                      00523         
+                      00524 
+                      00525         ;VALOR A CARGAR EN EL TMR0 ES DE 217 CON UN PREESCALADOR DE 255 Y UNA FRECUENCIA DE 4 MHZ PARA O
+                            BTENER UNA
+                      00526         ;INTERRUPCION CADA 10 MS
+                      00527         ;movlw  .217            ;Valor decimal 217      
+                      00528         ;movwf  TMR0            ;Carga el TMR0 con 217
+                      00529         ;movlw  .150            ;Cantidad de interrupciones a contar, como es el nivel 1, los topos apar
+                            ecen cada 1.5 segundos.
+                      00530         ;movwf  temporizador    ;Nº de veces a repetir la interrupción
+                      00531  
+                      00532 ;loop
+                      00533 ;    nop
+                      00534 ;    goto               loop            ; Permanece en el lazo hasta que ocurra una interrupcion
+                      00535 ;***********************************************************************************************
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00536 
+0160                  00537 sector1
+0160   0000           00538         nop
+                      00539         ;call    retardo
+0161   30C0           00540     movlw   b'11000000' 
+0162   0088           00541         movwf   PORTD
+0163   303F           00542         movlw   b'00111111'     
+0164   0087           00543         movwf   PORTC
+0165   2???           00544         goto lazo
+0166                  00545 sector2
+0166   0000           00546         nop
+                      00547         ;call    retardo
+0167   3030           00548     movlw   b'00110000' 
+0168   0088           00549         movwf   PORTD
+0169   303F           00550         movlw   b'00111111'     
+016A   0087           00551         movwf   PORTC
+016B   2???           00552         goto lazo
+016C                  00553 sector3
+016C   0000           00554         nop
+                      00555         ;call    retardo
+016D   300C           00556     movlw   b'00001100' 
+016E   0088           00557         movwf   PORTD
+016F   303F           00558         movlw   b'00111111'     
+0170   0087           00559         movwf   PORTC
+0171   2???           00560         goto lazo
+0172                  00561 sector4
+0172   0000           00562         nop
+                      00563         ;call    retardo
+0173   3003           00564     movlw   b'00000011' 
+0174   0088           00565         movwf   PORTD
+0175   303F           00566         movlw   b'00111111'     
+0176   0087           00567         movwf   PORTC
+0177   2???           00568         goto  lazo      
+0178                  00569 sector5
+0178   0000           00570         nop
+                      00571         ;call    retardo
+0179   30C0           00572     movlw   b'11000000' 
+017A   0088           00573         movwf   PORTD
+017B   30CF           00574         movlw   b'11001111'     
+017C   0087           00575         movwf   PORTC
+017D   2???           00576         goto lazo
+017E                  00577 sector6
+017E   0000           00578         nop
+                      00579         ;call    retardo
+017F   3030           00580     movlw   b'00110000' 
+0180   0088           00581         movwf   PORTD
+0181   30CF           00582         movlw   b'11001111'     
+0182   0087           00583         movwf   PORTC
+0183   2???           00584         goto lazo
+0184                  00585 sector7
+0184   0000           00586         nop
+                      00587         ;call    retardo
+0185   300C           00588     movlw   b'00001100' 
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0186   0088           00589         movwf   PORTD
+0187   30CF           00590         movlw   b'11001111'     
+0188   0087           00591         movwf   PORTC
+0189   2???           00592         goto lazo
+018A                  00593 sector8
+018A   0000           00594         nop
+                      00595         ;call    retardo
+018B   3003           00596     movlw   b'00000011' 
+018C   0088           00597         movwf   PORTD
+018D   30CF           00598         movlw   b'11001111'     
+018E   0087           00599         movwf   PORTC
+018F   2???           00600         goto lazo
+0190                  00601 sector9
+0190   0000           00602         nop
+                      00603         ;call    retardo
+0191   30C0           00604     movlw   b'11000000' 
+0192   0088           00605         movwf   PORTD
+0193   30F3           00606         movlw   b'11110011'     
+0194   0087           00607         movwf   PORTC
+0195   2???           00608         goto lazo
+0196                  00609 sector10
+0196   0000           00610         nop
+                      00611         ;call    retardo
+0197   3030           00612     movlw   b'00110000' 
+0198   0088           00613         movwf   PORTD
+0199   30F3           00614         movlw   b'11110011'     
+019A   0087           00615         movwf   PORTC
+019B   2???           00616         goto lazo
+019C                  00617 sector11
+019C   0000           00618         nop
+                      00619         ;call    retardo
+019D   300C           00620     movlw   b'00001100' 
+019E   0088           00621         movwf   PORTD
+019F   30F3           00622         movlw   b'11110011'     
+01A0   0087           00623         movwf   PORTC
+01A1   2???           00624         goto lazo
+01A2                  00625 sector12 
+01A2   0000           00626         nop
+                      00627         ;call    retardo
+01A3   3003           00628     movlw   b'00000011' 
+01A4   0088           00629         movwf   PORTD
+01A5   30F3           00630         movlw   b'11110011'     
+01A6   0087           00631         movwf   PORTC
+01A7   2???           00632         goto lazo
+01A8                  00633 sector13
+01A8   0000           00634         nop
+                      00635         ;call    retardo
+01A9   30C0           00636     movlw   b'11000000' 
+01AA   0088           00637         movwf   PORTD
+01AB   30FC           00638         movlw   b'11111100'     
+01AC   0087           00639         movwf   PORTC
+01AD   2???           00640         goto lazo
+01AE                  00641 sector14
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01AE   0000           00642         nop
+                      00643         ;call    retardo
+01AF   3030           00644     movlw   b'00110000' 
+01B0   0088           00645         movwf   PORTD
+01B1   30FC           00646         movlw   b'11111100'     
+01B2   0087           00647         movwf   PORTC
+01B3   2???           00648         goto lazo
+01B4                  00649 sector15
+01B4   0000           00650         nop
+                      00651         ;call    retardo
+01B5   300C           00652     movlw   b'00001100' 
+01B6   0088           00653         movwf   PORTD
+01B7   30FC           00654         movlw   b'11111100'     
+01B8   0087           00655         movwf   PORTC
+01B9   2???           00656         goto lazo
+01BA                  00657 sector16
+01BA   0000           00658         nop
+                      00659         ;call    retardo
+01BB   3003           00660     movlw   b'00000011' 
+01BC   0088           00661         movwf   PORTD
+01BD   30FC           00662         movlw   b'11111100'     
+01BE   0087           00663         movwf   PORTC
+01BF   2???           00664         goto lazo
+                      00665 
+                      00666 ;***************************************************************************
+01C0                  00667 retardo
+Message[305]: Using default destination of 1 (file).
+01C0   0BA1           00668                 decfsz  contador
+01C1   2???           00669         goto    retardo
+01C2   30FF           00670                 movlw   0xFF
+01C3   00A1           00671                 movwf   contador
+01C4   0008           00672         return
+                      00673 
+                      00674 ;***************************************************************************
+01C5                  00675 retardo_1s
+01C5   3014           00676         movlw d'20'
+01C6   00AA           00677         movwf cont_3
+01C7   3064           00678         movlw d'100'
+01C8   00A9           00679         movwf cont_2
+01C9   30FA           00680         movlw d'250'
+01CA   00A8           00681         movwf cont_1
+01CB   0000           00682         nop
+01CC   0BA8           00683         decfsz cont_1,F
+01CD   2???           00684         goto $-2
+01CE   0BA9           00685         decfsz cont_2,F
+01CF   2???           00686         goto $-6
+01D0   0BAA           00687         decfsz cont_3,F
+01D1   2???           00688         goto $-10
+01D2   0008           00689         return
+                      00690 
+                      00691         
+                      00692         INCLUDE     delay_s.INC 
+                      00001 ;;--------------------------------------------------------------------------------
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00002 ;;
+                      00003 ;; Libreria de subrutinas de retraso en segundos
+                      00004 ;;
+                      00005 ;; Escrito por Almejandro para el español
+                      00006 ;;
+                      00007 ;;--------------------------------------------------------------------------------
+                      00008 ;;
+                      00009 ;; Variables requeridas / Constantes para la funcion de retraso en segundos
+                      00010 ;;
+                      00011 ;; Constantrs:   CLOCK           - La velocidad del PIC en Hz
+                      00012 ;;
+                      00013 ;; Variables:   delay_temp       - Guarda un dato temporal
+                      00014 ;;
+                      00015 ;;--------------------------------------------------------------------------------
+                      00016 
+                      00017 
+                      00018 ;;--------------------------------------------------------------------------------
+                      00019 ;;
+                      00020 ;; Subrutina para retraso por un numero de segundos (para diferentes velocidades del reloj)
+                      00021 ;;
+                      00022 ;; Parametros:  w (in)          - En W el numero de segundos que queremos esperar
+                      00023 ;;
+                      00024 ;;--------------------------------------------------------------------------------
+                      00025 
+                      00026                 CBLOCK
+  00000030            00027                 d1
+  00000031            00028                 d2
+  00000032            00029                 d3
+  00000033            00030                 delay_temp
+                      00031                 ENDC
+                      00032 
+                      00033 
+                      00034         IF      CLOCK==1000000
+                      00035 
+                      00036 Delay_s_0
+                      00037                 movwf   delay_temp
+                      00038 
+                      00039 Delay_s_1               
+                      00040                 movlw   0x4E
+                      00041                 movwf   d1
+                      00042                 movlw   0xC4
+                      00043                 movwf   d2
+                      00044 
+                      00045 Delay_s_2
+                      00046                 decfsz  d1, f
+                      00047                 goto    $+2
+                      00048                 decfsz  d2, f
+                      00049                 goto    Delay_s_2
+                      00050 
+                      00051 
+                      00052                 decf    delay_temp,f
+                      00053                 btfss   STATUS,Z
+                      00054                 goto    Delay_s_1
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00055                 return
+                      00056 
+                      00057 
+                      00058         ENDIF   ; CLOCK==1000000
+                      00059 
+                      00060 ;;--------------------------------------------------------------------------------
+                      00061 
+                      00062         IF      CLOCK==2000000
+                      00063 
+                      00064 Delay_s_0
+                      00065                 movwf   delay_temp
+                      00066 
+                      00067 Delay_s_1               
+                      00068                 movlw   0x03
+                      00069                 movwf   d1
+                      00070                 movlw   0x18
+                      00071                 movwf   d2
+                      00072                 movlw   0x02
+                      00073                 movwf   d3
+                      00074 
+                      00075 Delay_s_2
+                      00076                 decfsz  d1, f
+                      00077                 goto    $+2
+                      00078                 decfsz  d2, f
+                      00079                 goto    $+2
+                      00080                 decfsz  d3, f
+                      00081                 goto    Delay_s_2
+                      00082 
+                      00083 
+                      00084                 decf    delay_temp,f
+                      00085                 btfss   STATUS,Z
+                      00086                 goto    Delay_s_1
+                      00087                 goto    $+1
+                      00088                 nop
+                      00089                 return
+                      00090 
+                      00091 
+                      00092 
+                      00093         ENDIF   ; CLOCK==2000000
+                      00094 
+                      00095 ;;--------------------------------------------------------------------------------
+                      00096 
+                      00097         IF      CLOCK==4000000
+                      00098 
+                      00099 
+01D3                  00100 Delay_s_0
+01D3   00B3           00101                 movwf   delay_temp
+                      00102 
+01D4                  00103 Delay_s_1       
+01D4   3007           00104                 movlw   0x07
+01D5   00B0           00105                 movwf   d1
+01D6   302F           00106                 movlw   0x2F
+01D7   00B1           00107                 movwf   d2
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01D8   3003           00108                 movlw   0x03
+01D9   00B2           00109                 movwf   d3
+                      00110 
+01DA                  00111 Delay_s_2
+01DA   0BB0           00112                 decfsz  d1, f
+01DB   2???           00113                 goto    $+2
+01DC   0BB1           00114                 decfsz  d2, f
+01DD   2???           00115                 goto    $+2
+01DE   0BB2           00116                 decfsz  d3, f
+01DF   2???           00117                 goto    Delay_s_2
+                      00118 
+                      00119 
+01E0   03B3           00120                 decf    delay_temp,f
+01E1   1D03           00121                 btfss   STATUS,Z
+01E2   2???           00122                 goto    Delay_s_1
+01E3   2???           00123                 goto    $+1
+01E4   0000           00124                 nop
+01E5   0008           00125                 return
+                      00126 
+                      00127         
+                      00128         ENDIF   ; CLOCK==4000000
+                      00129 
+                      00130 ;;--------------------------------------------------------------------------------
+                      00131 
+                      00132         IF      CLOCK==8000000
+                      00133 
+                      00134 Delay_s_0
+                      00135                 movwf   delay_temp
+                      00136 
+                      00137 Delay_s_1       
+                      00138                 movlw   0x10
+                      00139                 movwf   d1
+                      00140                 movlw   0x5D
+                      00141                 movwf   d2
+                      00142                 movlw   0x05
+                      00143                 movwf   d3
+                      00144 
+                      00145 Delay_s_2
+                      00146                 decfsz  d1, f
+                      00147                 goto    $+2
+                      00148                 decfsz  d2, f
+                      00149                 goto    $+2
+                      00150                 decfsz  d3, f
+                      00151                 goto    Delay_s_2
+                      00152 
+                      00153 
+                      00154                 decf    delay_temp,f
+                      00155                 btfss   STATUS,Z
+                      00156                 goto    Delay_s_1
+                      00157                 goto    $+1
+                      00158                 return
+                      00159 
+                      00160 
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00161         ENDIF   ; CLOCK==8000000
+                      00162 
+                      00163 ;;--------------------------------------------------------------------------------
+                      00164 
+                      00165         IF      CLOCK==16000000
+                      00166 
+                      00167 Delay_s_0
+                      00168                 movwf   delay_temp
+                      00169 
+                      00170 Delay_s_1               
+                      00171                 movlw   0x23
+                      00172                 movwf   d1
+                      00173                 movlw   0xB9
+                      00174                 movwf   d2
+                      00175                 movlw   0x09
+                      00176                 movwf   d3
+                      00177 
+                      00178 Delay_s_2
+                      00179                 decfsz  d1, f
+                      00180                 goto    $+2
+                      00181                 decfsz  d2, f
+                      00182                 goto    $+2
+                      00183                 decfsz  d3, f
+                      00184                 goto    Delay_s_2
+                      00185 
+                      00186 
+                      00187                 decf    delay_temp,f
+                      00188                 btfss   STATUS,Z
+                      00189                 goto    Delay_s_1
+                      00190                 goto    $+1
+                      00191                 return
+                      00192         
+                      00193         ENDIF   ; CLOCK==16000000
+                      00194 
+                      00195 ;;--------------------------------------------------------------------------------
+                      00196 
+                      00197         IF      CLOCK==20000000
+                      00198 
+                      00199 
+                      00200 Delay_s_0
+                      00201                 movwf   delay_temp
+                      00202 
+                      00203 Delay_s_1
+                      00204                 movlw   0x2C
+                      00205                 movwf   d1
+                      00206                 movlw   0xE7
+                      00207                 movwf   d2
+                      00208                 movlw   0x0B
+                      00209                 movwf   d3
+                      00210 Delay_s_2
+                      00211                 decfsz  d1, f
+                      00212                 goto    $+2
+                      00213                 decfsz  d2, f
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 19
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00214                 goto    $+2
+                      00215                 decfsz  d3, f
+                      00216                 goto    Delay_s_2
+                      00217 
+                      00218                 decf    delay_temp,f
+                      00219                 btfss   STATUS,Z
+                      00220                 goto    Delay_s_1
+                      00221 
+                      00222                 goto    $+1
+                      00223                 nop
+                      00224                 return
+                      00225 
+                      00226         ENDIF   ; CLOCK==20000000
+                      00227 
+                      00228 ;;--------------------------------------------------------------------------------
+3FF0                  00693         END                    ; Fin del programa fuente
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 20
 
 
 SYMBOL TABLE
@@ -246,7 +1141,7 @@ BRG6                              00000006
 BRG7                              00000007
 BRG8                              00000000
 BRG9                              00000001
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  6
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 21
 
 
 SYMBOL TABLE
@@ -305,7 +1200,7 @@ CHS0                              00000002
 CHS1                              00000003
 CHS2                              00000004
 CHS3                              00000005
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  7
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 22
 
 
 SYMBOL TABLE
@@ -313,6 +1208,7 @@ SYMBOL TABLE
 
 CKE                               00000006
 CKP                               00000004
+CLOCK                             04000000
 CM1CON0                           00000107
 CM2CON0                           00000108
 CM2CON1                           00000109
@@ -327,6 +1223,12 @@ DC2B0                             00000004
 DC2B1                             00000005
 D_A                               00000005
 D_NOT_A                           00000005
+Delay_ms                          
+Delay_s                           
+Delay_s_0                         000001D3
+Delay_s_1                         000001D4
+Delay_s_2                         000001DA
+Delay_us                          
 ECCPAS                            0000009C
 ECCPAS0                           00000004
 ECCPAS1                           00000005
@@ -357,6 +1259,12 @@ I2C_READ                          00000002
 I2C_START                         00000003
 I2C_STOP                          00000004
 INDF                              00000000
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 INTCON                            0000000B
 INTE                              00000004
 INTEDG                            00000006
@@ -364,12 +1272,6 @@ INTF                              00000001
 IOCB                              00000096
 IOCB0                             00000000
 IOCB1                             00000001
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  8
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 IOCB2                             00000002
 IOCB3                             00000003
 IOCB4                             00000004
@@ -416,6 +1318,12 @@ OSTS                              00000003
 P                                 00000004
 P1M0                              00000006
 P1M1                              00000007
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 24
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PCL                               00000002
 PCLATH                            0000000A
 PCON                              0000008E
@@ -423,12 +1331,6 @@ PDC0                              00000000
 PDC1                              00000001
 PDC2                              00000002
 PDC3                              00000003
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE  9
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PDC4                              00000004
 PDC5                              00000005
 PDC6                              00000006
@@ -475,6 +1377,12 @@ RB5                               00000005
 RB6                               00000006
 RB7                               00000007
 RBIE                              00000003
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 25
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 RBIF                              00000000
 RC0                               00000000
 RC1                               00000001
@@ -482,12 +1390,6 @@ RC2                               00000002
 RC3                               00000003
 RC4                               00000004
 RC5                               00000005
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE 10
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 RC6                               00000006
 RC7                               00000007
 RC8_9                             00000006
@@ -534,6 +1436,12 @@ SR0                               00000006
 SR1                               00000007
 SRCON                             00000185
 SREN                              00000005
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 SSPADD                            00000093
 SSPBUF                            00000013
 SSPCON                            00000014
@@ -541,12 +1449,6 @@ SSPCON2                           00000091
 SSPEN                             00000005
 SSPIE                             00000003
 SSPIF                             00000003
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE 11
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 SSPM0                             00000000
 SSPM1                             00000001
 SSPM2                             00000002
@@ -562,6 +1464,7 @@ STRD                              00000003
 STRSYNC                           00000004
 SWDTEN                            00000000
 SYNC                              00000004
+Seguir_tmr0                       000000D9
 T0CS                              00000005
 T0IE                              00000005
 T0IF                              00000002
@@ -592,6 +1495,12 @@ TMR1ON                            00000000
 TMR2                              00000011
 TMR2IE                            00000001
 TMR2IF                            00000001
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TMR2ON                            00000002
 TOUTPS0                           00000003
 TOUTPS1                           00000004
@@ -600,12 +1509,6 @@ TOUTPS3                           00000006
 TRISA                             00000085
 TRISA0                            00000000
 TRISA1                            00000001
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE 12
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 TRISA2                            00000002
 TRISA3                            00000003
 TRISA4                            00000004
@@ -651,6 +1554,12 @@ TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
 TX8_9                             00000006
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TX9                               00000006
 TX9D                              00000000
 TXD8                              00000000
@@ -659,12 +1568,6 @@ TXIE                              00000004
 TXIF                              00000004
 TXREG                             00000019
 TXSTA                             00000098
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE 13
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 UA                                00000001
 ULPWUE                            00000005
 ULPWUIE                           00000002
@@ -701,6 +1604,63 @@ WREN                              00000002
 WRERR                             00000003
 WUE                               00000001
 Z                                 00000002
+_.org_2_000C                      0000000C
+_.org_2_0011                      00000011
+_.org_2_0016                      00000016
+_.org_2_001B                      0000001B
+_.org_2_0020                      00000020
+_.org_2_0025                      00000025
+_.org_2_002A                      0000002A
+_.org_2_002F                      0000002F
+_.org_2_0034                      00000034
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 29
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_.org_2_0039                      00000039
+_.org_2_003E                      0000003E
+_.org_2_0043                      00000043
+_.org_2_0048                      00000048
+_.org_2_004D                      0000004D
+_.org_2_0052                      00000052
+_.org_2_0084                      00000084
+_.org_2_0089                      00000089
+_.org_2_008E                      0000008E
+_.org_2_0093                      00000093
+_.org_2_0098                      00000098
+_.org_2_009D                      0000009D
+_.org_2_00A2                      000000A2
+_.org_2_00A7                      000000A7
+_.org_2_00AC                      000000AC
+_.org_2_00B1                      000000B1
+_.org_2_00B6                      000000B6
+_.org_2_00BB                      000000BB
+_.org_2_00C0                      000000C0
+_.org_2_00C5                      000000C5
+_.org_2_00CA                      000000CA
+_.org_2_0109                      00000109
+_.org_2_010E                      0000010E
+_.org_2_0113                      00000113
+_.org_2_0118                      00000118
+_.org_2_011D                      0000011D
+_.org_2_0122                      00000122
+_.org_2_0127                      00000127
+_.org_2_012C                      0000012C
+_.org_2_0131                      00000131
+_.org_2_0136                      00000136
+_.org_2_013B                      0000013B
+_.org_2_0140                      00000140
+_.org_2_0145                      00000145
+_.org_2_014A                      0000014A
+_.org_2_014F                      0000014F
+_.org_2_01CD                      000001CD
+_.org_2_01CF                      000001CF
+_.org_2_01D1                      000001D1
+_.org_2_01DB                      000001DB
+_.org_2_01DD                      000001DD
+_.org_2_01E3                      000001E3
 _BOR21V                           00003EFF
 _BOR40V                           00003FFF
 _BOR4V_BOR21V                     00003EFF
@@ -712,18 +1672,18 @@ _BOREN_SBODEN                     00003DFF
 _BOR_NSLEEP                       00003EFF
 _BOR_OFF                          00003CFF
 _BOR_ON                           00003FFF
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _BOR_SBODEN                       00003DFF
 _CONFIG1                          00002007
 _CONFIG2                          00002008
 _CPD_OFF                          00003FFF
 _CPD_ON                           00003F7F
 _CP_OFF                           00003FFF
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE 14
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _CP_ON                            00003FBF
 _DEBUG_OFF                        00003FFF
 _DEBUG_ON                         00001FFF
@@ -771,21 +1731,75 @@ _WRT_HALF                         000039FF
 _WRT_OFF                          00003FFF
 _XT_OSC                           00003FF9
 __16F887                          00000001
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 31
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 __DEBUG                           1
-aleatorio                         00000000
-contador                          00000001
-lazo1                             00000012
-main                              00000001
-retardo                           00000018
-MPASM  5.51                           PRJ.ASM   6-20-2016  0:27:03         PAGE 15
+aleatorio                         00000020
+cont_1                            00000028
+cont_2                            00000029
+cont_3                            0000002A
+cont_4                            0000002B
+cont_5                            0000002C
+cont_6                            0000002D
+cont_7                            0000002E
+cont_8                            0000002F
+cont_mul                          00000025
+contador                          00000021
+d1                                00000030
+d2                                00000031
+d3                                00000032
+dato                              00000024
+decrementando_aleatorio           00000154
+delay_temp                        00000033
+encendido_de_leds                 000000F5
+fin_interrupcion_portb            0000006E
+fin_interrupcion_tmr0             000000D4
+finalizando_random                00000058
+generar_random                    00000005
+incrementando_dato                00000158
+interrupciom_portb                0000005B
+interrupcion                      0000005A
+interrupcion_timer0               00000070
+lazo                              0000015D
+main                              000000DE
+mult                              00000074
+multiplicacion                    000000FD
+nivel                             00000023
+operando                          00000026
+retardo                           000001C0
+retardo_1s                        000001C5
+salir_interrupcion                000000DD
+sector1                           00000160
+sector10                          00000196
+sector11                          0000019C
+sector12                          000001A2
+sector13                          000001A8
+sector14                          000001AE
+sector15                          000001B4
+sector16                          000001BA
+sector2                           00000166
+sector3                           0000016C
+sector4                           00000172
+sector5                           00000178
+sector6                           0000017E
+sector7                           00000184
+sector8                           0000018A
+sector9                           00000190
+temporizador                      00000022
+MPASM  5.51                           PRJ.ASM   6-22-2016  22:03:08         PAGE 32
 
 
+SYMBOL TABLE
+  LABEL                             VALUE 
 
-
-
+topo                              00000027
 
 Errors   :     0
 Warnings :     1 reported,     0 suppressed
-Messages :     2 reported,     4 suppressed
+Messages :     1 reported,    12 suppressed
 
 

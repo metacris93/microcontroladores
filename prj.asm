@@ -1,14 +1,19 @@
 	LIST		p=16F887			
-	INCLUDE 	P16F887.INC		
+	INCLUDE 	P16F887.INC	
+	INCLUDE     Macro_Delays.INC
+	
 	__CONFIG _CONFIG1, _CP_OFF&_WDT_OFF&_XT_OSC&_INTOSCIO	
 	errorlevel	 -302
-
-	CBLOCK
+	CLOCK equ 4000000
+	CBLOCK 0x20
 		aleatorio    ; contendra numeros entre 1 y 16
 		contador     ; contador de retardos
 		temporizador ; contador de interrupciones
 		nivel
-		dato 
+		dato
+		cont_mul
+		operando
+		topo 
 	ENDC
 
 	   org	0x00		     	; vector de reset
@@ -126,52 +131,191 @@ generar_random
 ;***************************************************************************
 finalizando_random
 	bcf INTCON,RBIF
-	goto fin_interrupcion	
+	goto fin_interrupcion_portb	
 	
 ;***************************************************************************
 ;****                         INTERRUPCION                               ***
 ;***************************************************************************
 interrupcion
-	btfss  INTCON,RBIE	
+	;btfss  INTCON,RBIE	
 	goto   interrupcion_timer0
-	goto   interrupciom_portb
+	;goto   Seguir_tmr0          ;aqui va interrupcion_portb
 
 ;***************************************************************************
 ;****                        INTERRUPCION_PORTB                          ***
 ;***************************************************************************	
 interrupciom_portb
-	banksel  PORTB
-	btfsc    PORTB,0	
+	banksel  IOCB
+	btfsc    IOCB,0	
 	goto  generar_random
 
-	btfsc    PORTB,1
+	btfsc    IOCB,1
 	goto  generar_random
 
-	btfsc    PORTB,2
+	btfsc    IOCB,2
 	goto  generar_random
 
-	btfsc    PORTB,3
+	btfsc    IOCB,3
 	goto  generar_random
 	
-	btfsc    PORTB,4
+	btfsc    IOCB,4
 	goto  generar_random
 
-	btfsc    PORTB,5
+	btfsc    IOCB,5
 	goto  generar_random
 
-	btfsc    PORTB,6
+	btfsc    IOCB,6
 	goto  generar_random
 
-	btfsc    PORTB,7	
+	btfsc    IOCB,7	
 	goto  generar_random
+	goto  fin_interrupcion_portb
+
+;**************************************************************************
+;****                    FIN_INTERRUPCION_PUERTO_B                      ***
+;**************************************************************************
+fin_interrupcion_portb
+	bcf INTCON,RBIF
+	goto salir_interrupcion
 
 ;**************************************************************************
 ;****                     INTERRUPCION_TIMER0                           ***
 ;**************************************************************************
 interrupcion_timer0
 	decfsz 	    temporizador,f	;Decrementa el contador del timer0
-    goto		Seguir		    ;No, todavía
-	;movf		unidades,w  	;Ya ocurrieron 100 int de 10ms(1000ms)
+    goto		Seguir_tmr0 
+	movlw	    .150		  ;Cantidad de interrupciones a contar, como es el nivel 1, los topos aparecen cada 1.5 segundos.
+	movwf   	temporizador  ;Nº de veces a repetir la interrupción    
+mult
+	clrf cont_mul
+	movlw d'3'
+	movwf cont_mul
+	movf  aleatorio,W  ; w = aleatorio
+	movwf operando	   ; operando = w
+;multiplicacion
+	addwf  operando,F  ; operando lleva la acumulacion de las sumas consecutivas
+	decfsz cont_mul,F
+	goto multiplicacion
+
+	movf dato,W        ; W = dato 
+ 	addwf operando,W   ; W = operando + dato(que es W)
+	andlw 0x0F
+	movwf topo
+ 	
+	;****** es igual a 15 *******
+	movlw 0x0F ; 15
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector16
+	goto $+1
+	;****** es igual a 14 *******
+	movlw 0x0E ; 14
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector15
+	goto $+1
+	;****** es igual a 13 *******
+	movlw 0x0D ; 13
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector14
+	goto $+1
+	;****** es igual a 12 *******
+	movlw 0x0C ; 12
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector13
+	goto $+1
+	;****** es igual a 11 *******
+	movlw 0x0B ; 11
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector12
+	goto $+1
+	;****** es igual a 10 *******
+	movlw 0x0A ; 10
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector11
+	goto $+1
+	;****** es igual a 9 *******
+	movlw 0x09 ; 9
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector10
+	goto $+1
+	;****** es igual a 8 *******
+	movlw 0x08 ; 8
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector9
+	goto $+1
+	;****** es igual a 7 *******
+	movlw 0x07 ; 7
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector8
+	goto $+1
+	;****** es igual a 6 *******
+	movlw 0x06 ; 6
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector7
+	goto $+1
+	;****** es igual a 5 *******
+	movlw 0x05 ; 5
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector6
+	goto $+1
+	;****** es igual a 4 *******
+	movlw 0x04 ; 4
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector5
+	goto $+1
+	;****** es igual a 3 *******
+	movlw 0x03 ; 3
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector4
+	goto $+1
+	;****** es igual a 2 *******
+	movlw 0x02 ; 2
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector3
+	goto $+1
+	;****** es igual a 1 *******
+	movlw 0x01 ; 1
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector2
+	goto $+1
+	;****** es igual a 0 *******
+	movlw 0x00 ; 0
+	xorwf topo,W
+	btfsc STATUS,2
+	call sector1
+	
+	decfsz aleatorio, F ;aleatorio = aleatorio - 1
+	goto fin_interrupcion_tmr0
+	movf dato , W
+	movwf aleatorio
+	goto Seguir_tmr0	
+
+fin_interrupcion_tmr0	
+	movlw 0x0F
+	xorwf dato,W
+	btfss STATUS,2 ;verificamos si el resultado logico es igual a cero
+	incf dato , F
+	goto Seguir_tmr0
+	;goto   multiplicacion
+	;btfsc STATUS,C ; pregunto si hay un desbordamiento cuando el resultado es mayor a 255 y menor a 0
+	
+	
+		
+	;movf		unidades,w  	;Ya ocurrieron 150 interrupciones de 10ms(1500ms)
 	;call		TABLA
 	;movwf		uni_cod
 	;movf 		uni_cod,w
@@ -183,16 +327,17 @@ interrupcion_timer0
 	;goto		contando
 	;clrf		unidades
 
-contando
+;contando
  	;movlw 		.150
     ;movwf	 	contador   	;Repone el contador con 100 
 
-Seguir    
-	;movlw 		.217	;"~.39" es el complemento a 256
-				;equivale a ".217"		
-    ;movwf 		TMR0      	;Repone el TMR0 con 217
-	;bcf		    INTCON,T0IF	;Repone flag del TMR0
-    RETFIE			;Retorno de interrupción
+Seguir_tmr0    
+	movlw 		.217			
+    movwf 		TMR0      	  ;Repone el TMR0 con 217
+	bcf		    INTCON,T0IF	  ;Repone flag del TMR0
+	goto 		salir_interrupcion
+salir_interrupcion
+    RETFIE			          ;Retorno de interrupción
 
 	
 ;***************************************************************************
@@ -212,187 +357,296 @@ main
     clrf	PORTC
     banksel	PORTD
     clrf	PORTD
+	movlw   .5
+	movwf   dato
 	MOVLW	.4
 	MOVWF	aleatorio
 	CLRF    contador
+	clrf    topo
+;INTERRUPCIONES EN EL REGISTRO INTCON, CAMBIOS DE ESTADO EN EL PUERTO B
+	;movlw  b'10001000'
+	;movwf  INTCON
+; HABILITO LAS INTERRUPCIONES EN LOS 8 PINES DEL PUERTO B
+	;banksel IOCB
+	;movlw  b'11111111'
+	;movwf  IOCB
 
-	;banksel T2CON
+encendido_de_leds
+	clrf cont_1
+	clrf cont_2
+	clrf cont_3
+	clrf cont_mul
+	movlw .2
+	movwf cont_mul
+	movf  aleatorio,0  ; w = aleatorio
+	movwf operando	   ; operando = w
+multiplicacion
+	addwf  operando,W  ; operando lleva la acumulacion de las sumas consecutivas
+	decfsz cont_mul,F
+	goto multiplicacion
+
+	movwf operando
+	movf dato,0        ; W = dato 
+ 	addwf operando,W   ; W = operando + dato(que es W)
+	andlw 0x0F
+	movwf topo
+
+	;****** es igual a 15 *******
+	movlw 0x0F ; 15
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector16
+	goto $+1
+	;****** es igual a 14 *******
+	movlw 0x0E ; 14
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector15
+	goto $+1
+	;****** es igual a 13 *******
+	movlw 0x0D ; 13
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector14
+	goto $+1
+	;****** es igual a 12 *******
+	movlw 0x0C ; 12
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector13
+	goto $+1
+	;****** es igual a 11 *******
+	movlw 0x0B ; 11
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector12
+	goto $+1
+	;****** es igual a 10 *******
+	movlw 0x0A ; 10
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector11
+	goto $+1
+	;****** es igual a 9 *******
+	movlw 0x09 ; 9
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector10
+	goto $+1
+	;****** es igual a 8 *******
+	movlw 0x08 ; 8
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector9
+	goto $+1
+	;****** es igual a 7 *******
+	movlw 0x07 ; 7
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector8
+	goto $+1
+	;****** es igual a 6 *******
+	movlw 0x06 ; 6
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector7
+	goto $+1
+	;****** es igual a 5 *******
+	movlw 0x05 ; 5
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector6
+	goto $+1
+	;****** es igual a 4 *******
+	movlw 0x04 ; 4
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector5
+	goto $+1
+	;****** es igual a 3 *******
+	movlw 0x03 ; 3
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector4
+	goto $+1
+	;****** es igual a 2 *******
+	movlw 0x02 ; 2
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector3
+	goto $+1
+	;****** es igual a 1 *******
+	movlw 0x01 ; 1
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector2
+	goto $+1
+	;****** es igual a 0 *******
+	movlw 0x00 ; 0
+	xorwf topo,W
+	btfsc STATUS,2
+	goto sector1
+
+decrementando_aleatorio	
+	decfsz aleatorio, F ;aleatorio = aleatorio - 1
+	goto incrementando_dato
+	movf dato , W
+	movwf aleatorio	
+incrementando_dato	
+	movlw 0x0F
+	xorwf dato,W
+	btfss STATUS,2 ;verificamos si el resultado logico es igual a 15, de ser asi lo seteamos a cero
+	incf dato , F
+	goto encendido_de_leds	
+
+lazo
+	Delay_s .2
+	;call retardo_1s  ;genera retardos de 1 segundo
+	goto decrementando_aleatorio
+	 
+
+    ;banksel T2CON
 	;movlw b'00000100'  ;habilitar el tmr2
 
 	;PROGRAMACION DEL TMR0
-	banksel	 OPTION_REG  
-	movlw	 b'00000111'	;Programa TMR0 como temporizador
-	movwf	 OPTION_REG     ;con preescalador de 256
-
-	;INTERRUPCIONES EN EL REGHISTRO INTCON
-	movlw  b'10101000'
-	movwf  INTCON 
+	;banksel	 OPTION_REG  
+	;movlw	 b'00000111'	;Programa TMR0 como temporizador
+	;movwf	 OPTION_REG     ;con preescalador de 256
+	
 
 	;VALOR A CARGAR EN EL TMR0 ES DE 217 CON UN PREESCALADOR DE 255 Y UNA FRECUENCIA DE 4 MHZ PARA OBTENER UNA
 	;INTERRUPCION CADA 10 MS
-	movlw	.217		;Valor decimal 217	
-	movwf	TMR0		;Carga el TMR0 con 217
-	movlw	.150		;Cantidad de interrupciones a contar, como es el nivel 1, los topos aparecen cada 1.5 segundos.
-	movwf	temporizador	;Nº de veces a repetir la interrupción
+	;movlw	.217		;Valor decimal 217	
+	;movwf	TMR0		;Carga el TMR0 con 217
+	;movlw	.150		;Cantidad de interrupciones a contar, como es el nivel 1, los topos aparecen cada 1.5 segundos.
+	;movwf	temporizador	;Nº de veces a repetir la interrupción
  
-loop
-    nop
-    goto		loop		; Permanece en el lazo hasta que ocurra una interrupcion
+;loop
+;    nop
+;    goto		loop		; Permanece en el lazo hasta que ocurra una interrupcion
 ;***********************************************************************************************
 
-;lazo1
 sector1
 	nop
-	call    retardo
     movlw   b'11000000'	
 	movwf	PORTD
 	movlw   b'00111111'	
 	movwf	PORTC
-	return
+	goto lazo
 sector2
 	nop
-	call    retardo
     movlw   b'00110000'	
 	movwf	PORTD
 	movlw   b'00111111'	
 	movwf	PORTC
-	return
+	goto lazo
 sector3
 	nop
-	call    retardo
     movlw   b'00001100'	
 	movwf	PORTD
 	movlw   b'00111111'	
 	movwf	PORTC
-	return
-scetor4
+	goto lazo
+sector4
 	nop
-	call    retardo
     movlw   b'00000011'	
 	movwf	PORTD
 	movlw   b'00111111'	
 	movwf	PORTC
-	goto 	lazo1
-	return	
+	goto  lazo	
 sector5
 	nop
-	call    retardo
     movlw   b'11000000'	
 	movwf	PORTD
 	movlw   b'11001111'	
 	movwf	PORTC
-	return
+	goto lazo
 sector6
 	nop
-	call    retardo
     movlw   b'00110000'	
 	movwf	PORTD
 	movlw   b'11001111'	
 	movwf	PORTC
-	return
+	goto lazo
 sector7
 	nop
-	call    retardo
     movlw   b'00001100'	
 	movwf	PORTD
 	movlw   b'11001111'	
 	movwf	PORTC
-	return
+	goto lazo
 sector8
 	nop
-	call    retardo
     movlw   b'00000011'	
 	movwf	PORTD
 	movlw   b'11001111'	
 	movwf	PORTC
-	return
-scetor9
+	goto lazo
+sector9
 	nop
-	call    retardo
     movlw   b'11000000'	
 	movwf	PORTD
 	movlw   b'11110011'	
 	movwf	PORTC
-	return
+	goto lazo
 sector10
 	nop
-	call    retardo
     movlw   b'00110000'	
 	movwf	PORTD
 	movlw   b'11110011'	
 	movwf	PORTC
-	return
+	goto lazo
 sector11
 	nop
-	call    retardo
     movlw   b'00001100'	
 	movwf	PORTD
 	movlw   b'11110011'	
 	movwf	PORTC
-	return
-sector 12 
+	goto lazo
+sector12 
 	nop
-	call    retardo
     movlw   b'00000011'	
 	movwf	PORTD
 	movlw   b'11110011'	
 	movwf	PORTC
-	return
+	goto lazo
 sector13
 	nop
-	call    retardo
     movlw   b'11000000'	
 	movwf	PORTD
 	movlw   b'11111100'	
 	movwf	PORTC
-	return
+	goto lazo
 sector14
 	nop
-	call    retardo
     movlw   b'00110000'	
 	movwf	PORTD
 	movlw   b'11111100'	
 	movwf	PORTC
-	return
+	goto lazo
 sector15
 	nop
-	call    retardo
     movlw   b'00001100'	
 	movwf	PORTD
 	movlw   b'11111100'	
 	movwf	PORTC
-	return
+	goto lazo
 sector16
 	nop
-	call    retardo
     movlw   b'00000011'	
 	movwf	PORTD
 	movlw   b'11111100'	
 	movwf	PORTC
-	return
-;***************************************************************************
-?; TABLA DE CONVERSION
-TABLA
-	ADDWF  PCL,F      ; PCL + W -> PCL
-	RETLW  0x3F                        ; Retorna con el código del 0
-	RETLW  0x06                        ; Retorna con el código del 1
-	RETLW  0x5B                        ; Retorna con el código del 2
-	RETLW  0x4F                        ; Retorna con el código del 3
-	RETLW  0x66                        ; Retorna con el código del 4
-	RETLW  0x6D                        ; Retorna con el código del 5
-	RETLW  0x7D                        ; Retorna con el código del 6
-	RETLW  0x07                        ; Retorna con el código del 7
-	RETLW  0x7F                        ; Retorna con el código del 8
-	RETLW  0x67                        ; Retorna con el código del 9
-	END                    ; Fin del programa fuente
+	goto lazo
 
 ;***************************************************************************
 retardo
-	decfsz  contador
-    goto 	retardo
-	movlw   0xFF
-	movwf	contador
-    return
-
+		decfsz  contador
+    	goto 	retardo
+		movlw   0xFF
+		movwf	contador
+    	return
 	
-end
+	INCLUDE     delay_s.INC	
+	END                    ; Fin del programa fuente
+
