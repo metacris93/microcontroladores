@@ -1,4 +1,4 @@
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  1
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -15,12 +15,538 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00007 ;==========================================================================
                       00008 
                       00809         LIST
-2007   3FF1           00003         __CONFIG _CONFIG1, _CP_OFF&_WDT_OFF&_XT_OSC     
-                      00004         errorlevel       -302
-                      00005 
-                      00006 
-3FF1                  00007         end     
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  2
+                      00003         INCLUDE     Macro_Delays.INC
+                      00001 ;;------------------------------------------------------------------------------------
+                      00002 ;;
+                      00003 ;; En esta libreria definimos las macros para los retardos usados en las librerias:
+                      00004 ;; delay_s.INC, delay_ms.INC y delay_us.INC. Con ello con las simples instrucciones
+                      00005 ;; Definidas en las macros, podemos hacer mas leible y facil la programacion de nuestros
+                      00006 ;; retardos en ensamblador.
+                      00007 ;;
+                      00008 ;;-----------------------------------------------------------------------------------
+                      00009 ;; ADVERTENCIA: Recordad llamar esta libreria antes que las librerias con los retardos,
+                      00010 ;; caso contrario, el compilador les dara un error.
+                      00011 ;;-----------------------------------------------------------------------------------
+                      00012 
+                      00013 
+                      00014 ;; Definicion de las macros para los retardos
+                      00015                 
+                      00016 Delay_s  MACRO  Tiempo_delay
+                      00017                 movlw   Tiempo_delay
+                      00018                 call    Delay_s_0
+                      00019                 ENDM            
+                      00020 
+                      00021 Delay_ms  MACRO  Tiempo_delay
+                      00022                 movlw   Tiempo_delay
+                      00023                 call    delay_ms_0
+                      00024                 ENDM            
+                      00025                 
+                      00026 Delay_us  MACRO  Tiempo_delay
+                      00027                 movlw   Tiempo_delay
+                      00028                 call    Delay_us_0
+                      00029                 ENDM            
+                      00030                 
+                      00031 ;;--------------------------------------------------------------------------------
+2007   3FF0           00004         __CONFIG _CONFIG1, _CP_OFF&_WDT_OFF&_XT_OSC&_INTOSCIO
+                      00005         errorlevel       -302
+Warning[207]: Found label after column 1. (CLOCK)
+  04000000            00006         CLOCK equ 4000000
+                      00007 
+                      00008         CBLOCK 0x20
+  00000020            00009                 seleccion
+  00000021            00010                 contador
+  00000022            00011                 decenas
+  00000023            00012                 unidades
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000024            00013                 dec_cod
+  00000025            00014                 uni_cod
+  00000026            00015                 nivel
+                      00016         ENDC
+                      00017 
+                      00018 ;********************************************************************************
+                      00019 ;PROGRAMA
+                      00020         ORG     0x00            ;Vector de RESET
+0000   2???           00021         GOTO    MAIN
+                      00022         Org         0x04                ; vector de interrupción  
+0004   2???           00023     Goto        INTERRUPCION
+                      00024 
+                      00025 ;********************************************************************************
+                      00026 
+0005                  00027 MAIN
+                      00028 ;***********************     SETEO DE PUERTOS      ******************************
+0005   1683 1703      00029         BANKSEL     ANSEL               ;Selecciona el Bank3
+0007   0188           00030         CLRF            ANSEL
+0008   0189           00031         CLRF            ANSELH
+0009   1683 1303      00032         BANKSEL         TRISA           ;Selecciona el Bank1
+000B   30FF           00033         movlw       0xFF
+000C   0086           00034         movwf           TRISB           ;PORTA configurado como entrada
+000D   0187           00035         clrf        TRISC       ; configuro PORTC COMO SALIDA
+000E   0188           00036         clrf        TRISD               ; configuro PORTD COMO SALIDA      
+000F   1283 1303      00037         BANKSEL         PORTA           ;Selecciona el Bank0            
+0011   0185           00038         CLRF            PORTA           ;Borra latch de salida de PORTB         
+0012   0187           00039         CLRF        PORTC
+0013   0188           00040         clrf        PORTD
+0014   0186           00041         clrf            PORTB
+                      00042 
+                      00043 ;*********************          DECLARACION DE VARIABLES                *********************
+0015   3001           00044         movlw   .1
+0016   00A2           00045         movwf   decenas    ; las decenas me reprentan el nivel
+0017   01A3           00046         clrf    unidades   ; las unidades me representan los aciertos del jugador
+0018   01A4           00047         clrf    dec_cod
+0019   01A5           00048         clrf    uni_cod
+001A   01A0           00049         clrf    seleccion
+                      00050         ;movlw   .1
+                      00051         ;movwf   nivel  
+                      00052         ;movf  nivel, W
+                      00053         ;call  tabla
+                      00054         ;movwf dec_cod
+                      00055         ;movf  dec_cod, W
+                      00056         ;movwf  PORTC
+                      00057         ;banksel  PORTD
+                      00058         ;bsf      PORTD,0
+                      00059         ;bcf      PORTD,1       
+                      00060         ;CLRW
+                      00061         ;movwf  PORTC
+                      00062         ;bsf    PORTD,1
+                      00063         ;bcf    PORTD,0 
+001B   1683 1303      00064         banksel     OPTION_REG  ; Bank containing register OPTION_REG
+001D   3007           00065         movlw           b'00000111'     ;carga divisor con 255, se lo aplica a TMR0
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00066                                         ;PSA =0 (BIT 3); se aplica el divisor al TMR0
+                      00067                                         ;TOCS=0 (BIT 5); TMR0 origen de pulsos Fosc/4
+001E   0081           00068         movwf           OPTION_REG
+                      00069 
+001F   30B0           00070         movlw           b'10110000'     ;habilita interrupción por Timer 0 y Global
+                      00071                                 ;GIE=1 (BIT 7); habilita interrupciones globales 
+                      00072                                 ;TMR0IE=1 (BIT 5); habilita interrupciones por TMR0
+                      00073                             ;INTE=1 (BIT 4); habilita interrupciones por RB0  
+0020   008B           00074         movwf           INTCON
+                      00075 
+0021   1283 1303      00076         BANKSEL     TMR0                ;Selecciona el Bank0
+0023   30D9           00077         movlw           .217            ;Valor decimal 217      
+0024   0081           00078         movwf           TMR0            ;Carga el TMR0 con 217
+                      00079 
+0025                  00080 LOOP    
+0025   0000           00081         nop
+                      00082         ;BTFSS          PORTA,0                                                                         
+                                                                    
+                      00083         ;GOTO           LOOP
+                      00084     ;GOTO        label1                                                                                 
+                                                            
+Warning[203]: Found opcode in column 1. (GOTO)
+0026   2???           00085 GOTO LOOP
+                      00086 
+                      00087 ;*******************************************************************************
+0027                  00088 INTERRUPCION
+0027   1D0B           00089         btfss  INTCON,TMR0IF
+0028   2???           00090         goto   increment        
+0029   0820           00091         movf   seleccion,W
+002A   1903           00092         btfsc  STATUS,2
+002B   2???           00093         goto   etiqueta_decenas
+                      00094 
+002C                  00095 etiqueta_unidades
+002C   0823           00096          movf     unidades,W
+002D   2???           00097          call     tabla
+002E   00A5           00098          movwf    uni_cod
+002F   0825           00099          movf     uni_cod,W
+0030   1283 1303      00100          banksel  PORTD 
+0032   1408           00101          bsf      PORTD,0
+0033   1488           00102          bsf      PORTD,1
+0034   0087           00103          movwf    PORTC
+0035   1088           00104          bcf      PORTD,1       
+0036   09A0           00105          comf     seleccion,F
+0037   2???           00106          goto     timer0
+                      00107 
+0038                  00108 etiqueta_decenas
+0038   0822           00109          movf     decenas,W
+0039   2???           00110          call     tabla
+003A   00A4           00111          movwf    dec_cod
+003B   0824           00112      movf     dec_cod,W
+003C   1283 1303      00113          banksel  PORTD
+003E   1408           00114          bsf      PORTD,0
+003F   1488           00115          bsf      PORTD,1
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0040   0087           00116          movwf    PORTC
+0041   1008           00117          bcf      PORTD,0
+0042   09A0           00118         comf      seleccion,F
+                      00119 
+0043                  00120 timer0  
+0043   110B           00121         bcf             INTCON,TMR0IF   ; Clears interrupt flag TMR0IF
+0044   30D8           00122         movlw   ~.39
+0045   0081           00123         movwf   TMR0                    ;Repone el TMR0 con ~.39
+0046   2???           00124         goto    Seguir
+                      00125 
+0047                  00126 increment
+0047   0AA3           00127         INCF    unidades,f      
+0048   3006           00128         movlw   .6
+0049   0223           00129         subwf   unidades,w
+004A   1D03           00130         btfss   STATUS,2
+004B   2???           00131         goto    fin_RB0
+004C   01A3           00132         clrf    unidades
+Message[305]: Using default destination of 1 (file).
+004D   0AA2           00133         incf    decenas
+004E   3004           00134         movlw   .4
+004F   0222           00135         subwf   decenas,w
+0050   1D03           00136         btfss   STATUS,2
+0051   2???           00137         goto    fin_RB0
+0052   01A2           00138         clrf    decenas
+                      00139 
+0053                  00140 fin_RB0
+0053   108B           00141         bcf             INTCON,INTF
+                      00142 
+0054                  00143 Seguir
+0054   0009           00144         retfie
+                      00145 
+0055                  00146 inc_unidades
+0055   0AA3           00147         INCF    unidades,f
+0056   1283 1303      00148         banksel  PORTA
+0058   1005           00149         bcf      PORTA,0
+0059   2???           00150         goto    fin_RB0
+                      00151 
+005A                  00152 inc_decenas
+005A   0AA2           00153         incf    decenas,F
+005B   1283 1303      00154         banksel  PORTA
+005D   1005           00155         bcf      PORTA,0
+005E   2???           00156         goto    fin_RB0
+                      00157 
+                      00158 
+                      00159 ;label1 
+                      00160 ;        movf     unidades,W
+                      00161 ;     xorlw    b'00001010'
+                      00162 ;        btfss    STATUS,2
+                      00163 ;     goto     continuar
+                      00164 ; en las siguientes lineas hay que modificar cuando el jugador haya acertado 5 veces, entonces
+                      00165 ; lo que hay que hacer es aumentar en uno la decena
+                      00166 ;        clrf     unidades
+                      00167 ;        banksel  PORTA
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00168 ;        bcf      PORTA,0
+                      00169 ;        goto     LOOP
+                      00170 ;continuar
+                      00171 ;        movf     unidades,W
+                      00172 ;        call     tabla
+                      00173 ;        movwf    uni_cod
+                      00174 ;        movf     uni_cod,W
+                      00175 ;        banksel  PORTD 
+                      00176 ;        bsf      PORTD,0
+                      00177 ;        bsf      PORTD,1
+                      00178 ;        movwf    PORTC
+                      00179 ;        bcf      PORTD,1
+                      00180 ;        incf     unidades,F
+                      00181 ;        banksel  PORTA
+                      00182 ;        bcf      PORTA,0
+                      00183 ;        goto     LOOP  
+                      00184 
+                      00185 ; TABLA DE CONVERSION---------------------------------------------------------
+                      00186 
+005F                  00187 tabla
+005F   0782           00188         ADDWF   PCL,F           ; PCL + W -> PCL                                        
+0060   343F           00189         RETLW   0x3F            ; Retorna con el código del 0
+0061   3406           00190                 RETLW   0x06            ; Retorna con el código del 1
+0062   345B           00191                 RETLW   0x5B            ; Retorna con el código del 2
+0063   344F           00192                 RETLW   0x4F            ; Retorna con el código del 3
+0064   3466           00193                 RETLW   0x66            ; Retorna con el código del 4
+0065   346D           00194                 RETLW   0x6D            ; Retorna con el código del 5
+0066   347D           00195                 RETLW   0x7D            ; Retorna con el código del 6
+0067   3407           00196                 RETLW   0x07            ; Retorna con el código del 7
+0068   347F           00197                 RETLW   0x7F            ; Retorna con el código del 8
+0069   3467           00198                 RETLW   0x67            ; Retorna con el código del 9
+                      00199 
+                      00200         INCLUDE     delay_ms.INC
+                      00001 ;;--------------------------------------------------------------------------------
+                      00002 ;;
+                      00003 ;; Libreria de subrutinas de retraso en milisegundos
+                      00004 ;;
+                      00005 ;; Escrito por Andrew M. Bishop y editado por Almejandro para el español
+                      00006 ;;
+                      00007 ;;--------------------------------------------------------------------------------
+                      00008 ;;
+                      00009 ;; Variables requeridas / Constantes para la funcion de retraso en milisegundos
+                      00010 ;;
+                      00011 ;; Constantrs:   CLOCK           - La velocidad del PIC en Hz
+                      00012 ;;
+                      00013 ;; Variables:   delay_temp       - Guarda un dato temporal
+                      00014 ;;
+                      00015 ;;--------------------------------------------------------------------------------
+                      00016 
+                      00017 
+                      00018 ;;--------------------------------------------------------------------------------
+                      00019 ;;
+                      00020 ;; Subrutina para retraso por un numero de milisegundos (para diferentes velocidades del reloj)
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00021 ;;
+                      00022 ;; Parametros:  w (in)          - En W el numero de milisegundos que queremos esperar
+                      00023 ;;
+                      00024 ;;--------------------------------------------------------------------------------
+                      00025 
+                      00026 
+                      00027                 CBLOCK
+  00000027            00028                 delay_temp
+                      00029                 ENDC
+                      00030 
+                      00031 
+                      00032         IF      CLOCK==1000000
+                      00033 
+                      00034 ;; Timing analysis (at 1 MHz clock)
+                      00035 ;; Load and call       =  3                     =    3
+                      00036 ;; Static overhead = A = 11 + 4 * 59            =  247
+                      00037 ;; Outer loop      = B = 10 * (delay-1)         = - 10 +  10 * delay
+                      00038 ;; Inner loop      = C =  4 * 60 * (delay-1)    = -240 + 240 * delay
+                      00039 ;; Total           = 250 * delay
+                      00040 
+                      00041 delay_ms_0
+                      00042         goto    $+1             ; 2 ins (A)
+                      00043         movwf   delay_temp      ; 1 ins (A)
+                      00044         movlw   .60              ; 1 ins (A)
+                      00045 
+                      00046 delay_ms_loop
+                      00047         addlw   -1              ; 1 ins (A,B,C)
+                      00048         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
+                      00049         goto    delay_ms_loop   ; 2 ins (C)
+                      00050 
+                      00051         decf    delay_temp,F    ; 1 ins (A,B)
+                      00052         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
+                      00053         return                  ; 2 ins (A)
+                      00054 
+                      00055         nop                     ; 1 ins (B)
+                      00056         movlw   .61             ; 1 ins (B)
+                      00057         goto    delay_ms_loop   ; 2 ins (B)
+                      00058 
+                      00059 
+                      00060         ENDIF   ; CLOCK==1000000
+                      00061 
+                      00062 ;;--------------------------------------------------------------------------------
+                      00063 
+                      00064         IF      CLOCK==2000000
+                      00065 
+                      00066 ;; Timing analysis (at 2 MHz clock)
+                      00067 ;; Load and call       =  3                     =    3
+                      00068 ;; Static overhead = A =  9 + 4 * 122           =  497
+                      00069 ;; Outer loop      = B = 12 * (delay-1)         = - 12 +  12 * delay
+                      00070 ;; Inner loop      = C =  4 * 122 * (delay-1)   = -488 + 488 * delay
+                      00071 ;; Total           = 500 * delay
+                      00072 
+                      00073 delay_ms_0
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00074         movwf   delay_temp      ; 1 ins (A)
+                      00075         movlw   .123             ; 1 ins (A)
+                      00076 
+                      00077 delay_ms_loop
+                      00078         addlw   -1              ; 1 ins (A,B,C)
+                      00079         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
+                      00080         goto    delay_ms_loop   ; 2 ins (C)
+                      00081 
+                      00082         decf    delay_temp,F    ; 1 ins (A,B)
+                      00083         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
+                      00084         return                  ; 2 ins (A)
+                      00085 
+                      00086         goto    $+1             ; 2 ins (B)
+                      00087         nop                     ; 1 ins (B)
+                      00088         movlw   .123             ; 1 ins (B)
+                      00089         goto    delay_ms_loop   ; 2 ins (B)
+                      00090 
+                      00091 
+                      00092         ENDIF   ; CLOCK==2000000
+                      00093 
+                      00094 ;;--------------------------------------------------------------------------------
+                      00095 
+                      00096         IF      CLOCK==4000000
+                      00097 
+                      00098 ;; Timing analysis (at 4 MHz clock)
+                      00099 ;; Load and call       =  3                     =    3
+                      00100 ;; Static overhead = A =  9 + 4 * 247           =  997
+                      00101 ;; Outer loop      = B = 12 * (delay-1)         = - 12 +  12 * delay
+                      00102 ;; Inner loop      = C =  4 * 247 * (delay-1)   = -988 + 988 * delay
+                      00103 ;; Total           = 1000 * delay
+                      00104 
+006A                  00105 delay_ms_0
+006A   00A7           00106         movwf   delay_temp      ; 1 ins (A)
+006B   30F8           00107         movlw   .248             ; 1 ins (A)
+                      00108 
+006C                  00109 delay_ms_loop
+006C   3EFF           00110         addlw   -1              ; 1 ins (A,B,C)
+006D   1D03           00111         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
+006E   2???           00112         goto    delay_ms_loop   ; 2 ins (C)
+                      00113 
+006F   03A7           00114         decf    delay_temp,F    ; 1 ins (A,B)
+0070   1903           00115         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
+0071   0008           00116         return                  ; 2 ins (A)
+                      00117 
+0072   2???           00118         goto    $+1             ; 2 ins (B)
+0073   0000           00119         nop                     ; 1 ins (B)
+0074   30F8           00120         movlw   .248             ; 1 ins (B)
+0075   2???           00121         goto    delay_ms_loop   ; 2 ins (B)
+                      00122 
+                      00123 
+                      00124         ENDIF   ; CLOCK==4000000
+                      00125 
+                      00126 ;;--------------------------------------------------------------------------------
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00127 
+                      00128         IF      CLOCK==8000000
+                      00129 
+                      00130 ;; Timing analysis (at 8 MHz clock)
+                      00131 ;; Load and call       =  3                     =     3
+                      00132 ;; Static overhead = A = 13 + 8 * 248           =  1997
+                      00133 ;; Outer loop      = B = 16 * (delay-1)         = -  16 +   16 * delay
+                      00134 ;; Inner loop      = C =  8 * 248 * (delay-1)   = -1984 + 1984 * delay
+                      00135 ;; Total           = 2000 * delay
+                      00136 
+                      00137 delay_ms_0
+                      00138         movwf   delay_temp      ; 1 ins (A)
+                      00139         movlw   .249             ; 1 ins (A)
+                      00140 
+                      00141 delay_ms_loop
+                      00142         goto    $+1             ; 2 ins (A,B,C)
+                      00143         goto    $+1             ; 2 ins (A,B,C)
+                      00144         addlw   -1              ; 1 ins (A,B,C)
+                      00145         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
+                      00146         goto    delay_ms_loop   ; 2 ins (C)
+                      00147 
+                      00148         decf    delay_temp,F    ; 1 ins (A,B)
+                      00149         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
+                      00150         return                  ; 2 ins (A)
+                      00151 
+                      00152         goto    $+1             ; 2 ins (B)
+                      00153         nop                     ; 1 ins (B)
+                      00154         movlw   .249             ; 1 ins (B)
+                      00155         goto    delay_ms_loop   ; 2 ins (B)
+                      00156 
+                      00157 
+                      00158         ENDIF   ; CLOCK==8000000
+                      00159 
+                      00160 ;;--------------------------------------------------------------------------------
+                      00161 
+                      00162         IF      CLOCK==16000000
+                      00163 
+                      00164 ;; Timing analysis (at 16 MHz clock)
+                      00165 ;; Load and call       =  3                     =     3
+                      00166 ;; Static overhead = A = 13 + 16 * 249          =  3997
+                      00167 ;; Outer loop      = B = 16 * (delay-1)         = -  16 +   16 * delay
+                      00168 ;; Inner loop      = C = 16 * 249 * (delay-1)   = -3984 + 3984 * delay
+                      00169 ;; Total           = 4000 * delay
+                      00170 
+                      00171 delay_ms_0
+                      00172         movwf   delay_temp      ; 1 ins (A)
+                      00173         movlw   .250             ; 1 ins (A)
+                      00174         goto    delay_ms_entry_A; 2 ins (A)
+                      00175 
+                      00176 delay_ms_loop
+                      00177         goto    $+1             ; 2 ins (C)
+                      00178         goto    $+1             ; 2 ins (C)
+                      00179         goto    $+1             ; 2 ins (C)
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00180 delay_ms_entry_B
+                      00181         goto    $+1             ; 2 ins (B,C)
+                      00182         goto    $+1             ; 2 ins (B,C)
+                      00183 delay_ms_entry_A
+                      00184         goto    $+1             ; 2 ins (A,B,C)
+                      00185         addlw   -1              ; 1 ins (A,B,C)
+                      00186         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
+                      00187         goto    delay_ms_loop   ; 2 ins (C)
+                      00188 
+                      00189         decf    delay_temp,F    ; 1 ins (A,B)
+                      00190         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
+                      00191         return                  ; 2 ins (A)
+                      00192 
+                      00193         nop                     ; 1 ins (B)
+                      00194         movlw   .250             ; 1 ins (B)
+                      00195         goto    delay_ms_entry_B; 2 ins (B)
+                      00196 
+                      00197 
+                      00198         ENDIF   ; CLOCK==16000000
+                      00199 
+                      00200 ;;--------------------------------------------------------------------------------
+                      00201 
+                      00202         IF      CLOCK==20000000
+                      00203 
+                      00204 ;; Timing analysis (at 20 MHz clock)
+                      00205 ;; Load and call       =  3                     =     3
+                      00206 ;; Static overhead = A = 17 + 20 * 249          =  4997
+                      00207 ;; Outer loop      = B = 20 * (delay-1)         = -  20 +   20 * delay
+                      00208 ;; Inner loop      = C = 20 * 249 * (delay-1)   = -4980 + 4980 * delay
+                      00209 ;; Total           = 5000 * delay
+                      00210 
+                      00211 delay_ms_0
+                      00212         movwf   delay_temp      ; 1 ins (A)
+                      00213         movlw   .250             ; 1 ins (A)
+                      00214         goto    delay_ms_entry_A; 2 ins (A)
+                      00215 
+                      00216 delay_ms_loop
+                      00217         goto    $+1             ; 2 ins (C)
+                      00218         goto    $+1             ; 2 ins (C)
+                      00219         goto    $+1             ; 2 ins (C)
+                      00220 delay_ms_entry_B
+                      00221         goto    $+1             ; 2 ins (B,C)
+                      00222         goto    $+1             ; 2 ins (B,C)
+                      00223 delay_ms_entry_A
+                      00224         goto    $+1             ; 2 ins (A,B,C)
+                      00225         goto    $+1             ; 2 ins (A,B,C)
+                      00226         goto    $+1             ; 2 ins (A,B,C)
+                      00227         addlw   -1              ; 1 ins (A,B,C)
+                      00228         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
+                      00229         goto    delay_ms_loop   ; 2 ins (C)
+                      00230 
+                      00231         decf    delay_temp,F    ; 1 ins (A,B)
+                      00232         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00233         return                  ; 2 ins (A)
+                      00234 
+                      00235         nop                     ; 1 ins (B)
+                      00236         movlw   .250             ; 1 ins (B)
+                      00237         goto    delay_ms_entry_B; 2 ins (B)
+                      00238 
+                      00239 
+                      00240         ENDIF   ; CLOCK==20000000
+                      00241 
+                      00242 ;;--------------------------------------------------------------------------------
+3FF0                  00201         END     
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 11
 
 
 SYMBOL TABLE
@@ -79,7 +605,7 @@ BRG6                              00000006
 BRG7                              00000007
 BRG8                              00000000
 BRG9                              00000001
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  3
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 12
 
 
 SYMBOL TABLE
@@ -138,7 +664,7 @@ CHS0                              00000002
 CHS1                              00000003
 CHS2                              00000004
 CHS3                              00000005
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  4
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 13
 
 
 SYMBOL TABLE
@@ -146,6 +672,7 @@ SYMBOL TABLE
 
 CKE                               00000006
 CKP                               00000004
+CLOCK                             04000000
 CM1CON0                           00000107
 CM2CON0                           00000108
 CM2CON1                           00000109
@@ -160,6 +687,9 @@ DC2B0                             00000004
 DC2B1                             00000005
 D_A                               00000005
 D_NOT_A                           00000005
+Delay_ms                          
+Delay_s                           
+Delay_us                          
 ECCPAS                            0000009C
 ECCPAS0                           00000004
 ECCPAS1                           00000005
@@ -193,16 +723,17 @@ INDF                              00000000
 INTCON                            0000000B
 INTE                              00000004
 INTEDG                            00000006
-INTF                              00000001
-IOCB                              00000096
-IOCB0                             00000000
-IOCB1                             00000001
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  5
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 14
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+INTERRUPCION                      00000027
+INTF                              00000001
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
 IOCB2                             00000002
 IOCB3                             00000003
 IOCB4                             00000004
@@ -213,7 +744,9 @@ IRCF0                             00000004
 IRCF1                             00000005
 IRCF2                             00000006
 IRP                               00000007
+LOOP                              00000025
 LTS                               00000001
+MAIN                              00000005
 MC1OUT                            00000007
 MC2OUT                            00000006
 MSK                               00000093
@@ -249,6 +782,12 @@ OSTS                              00000003
 P                                 00000004
 P1M0                              00000006
 P1M1                              00000007
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 PCL                               00000002
 PCLATH                            0000000A
 PCON                              0000008E
@@ -256,12 +795,6 @@ PDC0                              00000000
 PDC1                              00000001
 PDC2                              00000002
 PDC3                              00000003
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  6
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 PDC4                              00000004
 PDC5                              00000005
 PDC6                              00000006
@@ -308,6 +841,12 @@ RB5                               00000005
 RB6                               00000006
 RB7                               00000007
 RBIE                              00000003
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 RBIF                              00000000
 RC0                               00000000
 RC1                               00000001
@@ -315,12 +854,6 @@ RC2                               00000002
 RC3                               00000003
 RC4                               00000004
 RC5                               00000005
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  7
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 RC6                               00000006
 RC7                               00000007
 RC8_9                             00000006
@@ -367,6 +900,12 @@ SR0                               00000006
 SR1                               00000007
 SRCON                             00000185
 SREN                              00000005
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 SSPADD                            00000093
 SSPBUF                            00000013
 SSPCON                            00000014
@@ -374,12 +913,6 @@ SSPCON2                           00000091
 SSPEN                             00000005
 SSPIE                             00000003
 SSPIF                             00000003
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  8
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 SSPM0                             00000000
 SSPM1                             00000001
 SSPM2                             00000002
@@ -395,6 +928,7 @@ STRD                              00000003
 STRSYNC                           00000004
 SWDTEN                            00000000
 SYNC                              00000004
+Seguir                            00000054
 T0CS                              00000005
 T0IE                              00000005
 T0IF                              00000002
@@ -425,6 +959,12 @@ TMR1ON                            00000000
 TMR2                              00000011
 TMR2IE                            00000001
 TMR2IF                            00000001
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TMR2ON                            00000002
 TOUTPS0                           00000003
 TOUTPS1                           00000004
@@ -433,12 +973,6 @@ TOUTPS3                           00000006
 TRISA                             00000085
 TRISA0                            00000000
 TRISA1                            00000001
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE  9
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 TRISA2                            00000002
 TRISA3                            00000003
 TRISA4                            00000004
@@ -484,6 +1018,12 @@ TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
 TX8_9                             00000006
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 TX9                               00000006
 TX9D                              00000000
 TXD8                              00000000
@@ -492,12 +1032,6 @@ TXIE                              00000004
 TXIF                              00000004
 TXREG                             00000019
 TXSTA                             00000098
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE 10
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 UA                                00000001
 ULPWUE                            00000005
 ULPWUIE                           00000002
@@ -534,6 +1068,7 @@ WREN                              00000002
 WRERR                             00000003
 WUE                               00000001
 Z                                 00000002
+_.org_1_0072                      00000072
 _BOR21V                           00003EFF
 _BOR40V                           00003FFF
 _BOR4V_BOR21V                     00003EFF
@@ -542,6 +1077,12 @@ _BOREN_NSLEEP                     00003EFF
 _BOREN_OFF                        00003CFF
 _BOREN_ON                         00003FFF
 _BOREN_SBODEN                     00003DFF
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _BOR_NSLEEP                       00003EFF
 _BOR_OFF                          00003CFF
 _BOR_ON                           00003FFF
@@ -551,12 +1092,6 @@ _CONFIG2                          00002008
 _CPD_OFF                          00003FFF
 _CPD_ON                           00003F7F
 _CP_OFF                           00003FFF
-MPASM  5.51                          PRJ2.ASM   6-19-2016  23:31:02         PAGE 11
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 _CP_ON                            00003FBF
 _DEBUG_OFF                        00003FFF
 _DEBUG_ON                         00001FFF
@@ -601,13 +1136,37 @@ _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
 _WRT_256                          00003DFF
 _WRT_HALF                         000039FF
+MPASM  5.51                          PRJ2.ASM   7-6-2016  0:57:17         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 _WRT_OFF                          00003FFF
 _XT_OSC                           00003FF9
 __16F887                          00000001
 __DEBUG                           1
+contador                          00000021
+dec_cod                           00000024
+decenas                           00000022
+delay_ms_0                        0000006A
+delay_ms_loop                     0000006C
+delay_temp                        00000027
+etiqueta_decenas                  00000038
+etiqueta_unidades                 0000002C
+fin_RB0                           00000053
+inc_decenas                       0000005A
+inc_unidades                      00000055
+increment                         00000047
+nivel                             00000026
+seleccion                         00000020
+tabla                             0000005F
+timer0                            00000043
+uni_cod                           00000025
+unidades                          00000023
 
 Errors   :     0
-Warnings :     0 reported,     0 suppressed
-Messages :     0 reported,     0 suppressed
+Warnings :     2 reported,     0 suppressed
+Messages :     1 reported,     6 suppressed
 
 

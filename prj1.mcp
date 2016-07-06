@@ -42,7 +42,7 @@ file_002=no
 file_003=no
 file_004=no
 [FILE_INFO]
-file_000=prj.asm
+file_000=prj1.asm
 file_001=delay_ms.inc
 file_002=delay_s.inc
 file_003=delay_us.inc
