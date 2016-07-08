@@ -1,12 +1,12 @@
 MPLINK 4.49, Linker
-Linker Map File - Created Wed Jul 06 00:55:06 2016
+Linker Map File - Created Thu Jul 07 20:56:41 2016
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000002
                    .cinit    romdata   0x000001    program   0x000004
-                   .org_1       code   0x000004    program   0x000380
+                   .org_1       code   0x000004    program   0x000394
       .config_2007_PRJ1.O       code   0x002007    program   0x000002
 
 
@@ -15,30 +15,30 @@ Linker Map File - Created Wed Jul 06 00:55:06 2016
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000002      
-                            0x000004    0x0001c3      
+                            0x000004    0x0001cd      
                             0x002007    0x002007      
-            452 out of 8455 program addresses used, program memory utilization is 5%
+            462 out of 8455 program addresses used, program memory utilization is 5%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                       DO   0x000185    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                Delay_s_0   0x0001b1    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-                Delay_s_1   0x0001b2    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-                Delay_s_2   0x0001b8    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-                       FA   0x000191    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       DO   0x00018f    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                Delay_s_0   0x0001bb    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+                Delay_s_1   0x0001bc    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+                Delay_s_2   0x0001c2    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+                       FA   0x00019b    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
                    FINISH   0x000018    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
              INTERRUPCION   0x000005    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
                     INTRB   0x000008    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       LA   0x000199    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       LA   0x0001a3    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
                      MAIN   0x00001a    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       MI   0x00018d    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   MUSIC1   0x0001a5    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       RE   0x000189    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       SI   0x00019d    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                      SOL   0x000195    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       MI   0x000197    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   MUSIC1   0x0001af    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       RE   0x000193    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       SI   0x0001a7    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                      SOL   0x00019f    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
              _.org_1_004D   0x00004d    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
              _.org_1_0052   0x000052    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
              _.org_1_0057   0x000057    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
@@ -55,46 +55,47 @@ Linker Map File - Created Wed Jul 06 00:55:06 2016
              _.org_1_008E   0x00008e    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
              _.org_1_0093   0x000093    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
              _.org_1_0108   0x000108    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0118   0x000118    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0128   0x000128    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0138   0x000138    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0148   0x000148    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0158   0x000158    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0168   0x000168    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0178   0x000178    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_01B9   0x0001b9    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-             _.org_1_01BB   0x0001bb    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-             _.org_1_01C1   0x0001c1    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+             _.org_1_0119   0x000119    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_012A   0x00012a    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_013B   0x00013b    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_014C   0x00014c    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_015D   0x00015d    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_016E   0x00016e    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_017F   0x00017f    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_01C3   0x0001c3    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+             _.org_1_01C5   0x0001c5    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+             _.org_1_01CB   0x0001cb    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
   decrementando_aleatorio   0x000098    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       do   0x0001a1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       do   0x0001ab    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
         encendido_de_leds   0x00003c    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
        incrementando_dato   0x00009c    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label0   0x000105    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label0   0x000104    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
                    label1   0x000115    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label2   0x000125    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label3   0x000135    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label4   0x000145    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label5   0x000155    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label6   0x000165    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label7   0x000175    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label2   0x000126    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label3   0x000137    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label4   0x000148    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label5   0x000159    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label6   0x00016a    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label7   0x00017b    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
                      lazo   0x0000a1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
            multiplicacion   0x000041    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector1   0x0000a5    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector10   0x0000db    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector11   0x0000e1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector12   0x0000e7    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector13   0x0000ed    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector14   0x0000f3    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector15   0x0000f9    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector16   0x0000ff    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector2   0x0000ab    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector3   0x0000b1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector4   0x0000b7    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector5   0x0000bd    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector6   0x0000c3    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector7   0x0000c9    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector8   0x0000cf    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector9   0x0000d5    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+           no_acerto_topo   0x00018c    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector1   0x0000a4    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector10   0x0000da    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector11   0x0000e0    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector12   0x0000e6    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector13   0x0000ec    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector14   0x0000f2    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector15   0x0000f8    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector16   0x0000fe    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector2   0x0000aa    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector3   0x0000b0    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector4   0x0000b6    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector5   0x0000bc    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector6   0x0000c2    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector7   0x0000c8    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector8   0x0000ce    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector9   0x0000d4    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
 
 
 
@@ -125,52 +126,53 @@ Linker Map File - Created Wed Jul 06 00:55:06 2016
   decrementando_aleatorio   0x000098    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
        incrementando_dato   0x00009c    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
                      lazo   0x0000a1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector1   0x0000a5    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector2   0x0000ab    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector3   0x0000b1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector4   0x0000b7    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector5   0x0000bd    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector6   0x0000c3    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector7   0x0000c9    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector8   0x0000cf    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                  sector9   0x0000d5    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector10   0x0000db    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector11   0x0000e1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector12   0x0000e7    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector13   0x0000ed    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector14   0x0000f3    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector15   0x0000f9    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                 sector16   0x0000ff    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label0   0x000105    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector1   0x0000a4    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector2   0x0000aa    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector3   0x0000b0    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector4   0x0000b6    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector5   0x0000bc    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector6   0x0000c2    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector7   0x0000c8    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector8   0x0000ce    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                  sector9   0x0000d4    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector10   0x0000da    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector11   0x0000e0    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector12   0x0000e6    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector13   0x0000ec    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector14   0x0000f2    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector15   0x0000f8    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                 sector16   0x0000fe    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label0   0x000104    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
              _.org_1_0108   0x000108    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
                    label1   0x000115    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0118   0x000118    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label2   0x000125    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0128   0x000128    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label3   0x000135    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0138   0x000138    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label4   0x000145    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0148   0x000148    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label5   0x000155    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0158   0x000158    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label6   0x000165    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0168   0x000168    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   label7   0x000175    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-             _.org_1_0178   0x000178    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       DO   0x000185    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       RE   0x000189    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       MI   0x00018d    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       FA   0x000191    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                      SOL   0x000195    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       LA   0x000199    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       SI   0x00019d    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                       do   0x0001a1    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                   MUSIC1   0x0001a5    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
-                Delay_s_0   0x0001b1    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-                Delay_s_1   0x0001b2    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-                Delay_s_2   0x0001b8    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-             _.org_1_01B9   0x0001b9    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-             _.org_1_01BB   0x0001bb    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
-             _.org_1_01C1   0x0001c1    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+             _.org_1_0119   0x000119    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label2   0x000126    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_012A   0x00012a    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label3   0x000137    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_013B   0x00013b    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label4   0x000148    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_014C   0x00014c    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label5   0x000159    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_015D   0x00015d    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label6   0x00016a    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_016E   0x00016e    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   label7   0x00017b    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+             _.org_1_017F   0x00017f    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+           no_acerto_topo   0x00018c    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       DO   0x00018f    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       RE   0x000193    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       MI   0x000197    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       FA   0x00019b    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                      SOL   0x00019f    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       LA   0x0001a3    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       SI   0x0001a7    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                       do   0x0001ab    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                   MUSIC1   0x0001af    program     static C:\Users\metac\Desktop\microcontroladores\prj1.asm
+                Delay_s_0   0x0001bb    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+                Delay_s_1   0x0001bc    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+                Delay_s_2   0x0001c2    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+             _.org_1_01C3   0x0001c3    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+             _.org_1_01C5   0x0001c5    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
+             _.org_1_01CB   0x0001cb    program     static C:\Users\metac\Desktop\microcontroladores\delay_s.INC
 
 

@@ -238,7 +238,6 @@ incrementando_dato
 
 lazo		 
 	Delay_s .2	
-	clrf   PORTA
 	goto decrementando_aleatorio
  
 ;***********************************************************************************************
@@ -360,6 +359,7 @@ sector16
 
 ;*****************************************************************************************************
 label0
+	clrf   PORTA
 	movlw  0x00
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -371,12 +371,13 @@ label0
 	movlw  0x04
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo   ; cambiar esta etiqueta xq cuando el jugador no acerto la posicion del topo entonces debe cargar otr valor en PORTA
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 label1
+	clrf   PORTA
 	movlw  0x01
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -388,12 +389,13 @@ label1
 	movlw  0x05
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 label2
+	clrf   PORTA
 	movlw  0x02
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -405,12 +407,13 @@ label2
 	movlw  0x06
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 label3
+	clrf   PORTA
 	movlw  0x03
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -422,12 +425,13 @@ label3
 	movlw  0x07
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 label4
+	clrf   PORTA
 	movlw  0x08
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -439,12 +443,13 @@ label4
 	movlw  0x0C
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 label5
+	clrf   PORTA
 	movlw  0x09
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -456,12 +461,13 @@ label5
 	movlw  0x0D
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 label6
+	clrf   PORTA
 	movlw  0x0A
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -473,12 +479,13 @@ label6
 	movlw  0x0E
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 label7
+	clrf   PORTA
 	movlw  0x0B
 	xorwf  topo, W
 	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
@@ -490,13 +497,17 @@ label7
 	movlw  0x0F
 	xorwf  topo, W
 	btfss  STATUS, 2
-	goto   FINISH
+	goto   no_acerto_topo
 	movlw  b'00000001'
 	movwf  PORTA
 	clrf   PORTB
 	GOTO   FINISH
 ;*********************************************************************************
 
+no_acerto_topo
+	movlw  b'00000010'
+	movwf  PORTA
+	GOTO   FINISH
 
 ;*********************************************************************************
 ;------------------------------SUBRUTINAS MUSICALES-----------------------------;*

@@ -13,6 +13,7 @@
 		dec_cod
 		uni_cod
 		nivel
+		intentos
 	ENDC
 
 ;********************************************************************************
@@ -47,27 +48,14 @@ MAIN
 	clrf    dec_cod
 	clrf 	uni_cod
 	clrf	seleccion
-	;movlw   .1
-	;movwf   nivel	
-	;movf  nivel, W
-	;call  tabla
-	;movwf dec_cod
-	;movf  dec_cod, W
-	;movwf  PORTC
-	;banksel  PORTD
-	;bsf	  PORTD,0
-	;bcf	  PORTD,1	
-	;CLRW
-	;movwf  PORTC
-	;bsf    PORTD,1
-	;bcf    PORTD,0	
+	clrf	intentos	
 	banksel	    OPTION_REG	; Bank containing register OPTION_REG
 	movlw		b'00000111'	;carga divisor con 255, se lo aplica a TMR0
 					;PSA =0 (BIT 3); se aplica el divisor al TMR0
 					;TOCS=0 (BIT 5); TMR0 origen de pulsos Fosc/4
 	movwf		OPTION_REG
 
-	movlw		b'10110000'	;habilita interrupción por Timer 0 y Global
+	movlw		b'10101000'	;habilita interrupción por Timer 0 y Global
 				;GIE=1 (BIT 7); habilita interrupciones globales 
 				;TMR0IE=1 (BIT 5); habilita interrupciones por TMR0
  			    ;INTE=1 (BIT 4); habilita interrupciones por RB0  
@@ -76,18 +64,22 @@ MAIN
 	BANKSEL	    TMR0		;Selecciona el Bank0
 	movlw		.217		;Valor decimal 217	
 	movwf		TMR0		;Carga el TMR0 con 217
+	
+	banksel  	IOCB
+	MOVLW		B'00000011'  ; interrupcion en el puerto RB1
+	movwf		IOCB
 
 LOOP   	
-	nop
-	;BTFSS		PORTA,0															
-	;GOTO		LOOP
-    ;GOTO        label1															
+	nop															
 GOTO LOOP
 
 ;*******************************************************************************
 INTERRUPCION
+	btfsc  INTCON,RBIF
+	goto	INTERB
 	btfss  INTCON,TMR0IF
-	goto   increment	
+	;goto   increment	
+	retfie
 	movf   seleccion,W
 	btfsc  STATUS,2
 	goto   etiqueta_decenas
@@ -121,66 +113,66 @@ timer0
 	bcf		INTCON,TMR0IF	; Clears interrupt flag TMR0IF
 	movlw 	~.39
    	movwf 	TMR0      		;Repone el TMR0 con ~.39
-	goto	Seguir
+	retfie
+	;goto Seguir
+
+;*************************************************************************************
+INTERB
+	BTFSC		PORTB,0															
+	GOTO		increment															
+	BTFSC		PORTB,1															
+	GOTO		decrement
+	bcf 	    INTCON,0
+	retfie
 
 increment
+	bcf 	INTCON,0	    
+	clrf    intentos
 	INCF 	unidades,f	
-	movlw	.6
+	movlw	.5
 	subwf	unidades,w
 	btfss	STATUS,2
-	goto	fin_RB0
+	retfie;goto	fin_RB0
 	clrf	unidades
 	incf	decenas
 	movlw	.4
 	subwf	decenas,w
 	btfss	STATUS,2
-	goto	fin_RB0
+	retfie;goto	fin_RB0
 	clrf	decenas
+	goto    victoria_decenas
 
-fin_RB0
-	bcf		INTCON,INTF
-
-Seguir
+decrement
+	bcf   INTCON,0		
+	incf  intentos,F
+	movlw .8
+	subwf intentos,W
+	btfsc STATUS,2
+	goto  derrota_decenas	
+	clrf  unidades
 	retfie
 
-inc_unidades
-	INCF 	unidades,f
-	banksel  PORTA
-	bcf      PORTA,0
-	goto    fin_RB0
+derrota_decenas
+	; aqui tengo que mostrar en el display PD
+	movlw    .10
+	movwf    decenas
+    
+derrota_unidades
+	movlw   .0
+	movwf   unidades	
+	retfie
 
-inc_decenas
-	incf	decenas,F
-	banksel  PORTA
-	bcf      PORTA,0
-	goto    fin_RB0
+victoria_decenas
+	movlw    .6
+	movwf    decenas ; aniadi esta linea
 
+victoria_unidades
+	movlw   .6
+	movwf   unidades  ; aniadi esta linea
+	retfie
 
-;label1 
-;	 movf     unidades,W
-;     xorlw    b'00001010'
-;	 btfss	  STATUS,2
-;     goto     continuar
-; en las siguientes lineas hay que modificar cuando el jugador haya acertado 5 veces, entonces
-; lo que hay que hacer es aumentar en uno la decena
-;	 clrf     unidades
-;	 banksel  PORTA
-;	 bcf      PORTA,0
-;	 goto     LOOP
-;continuar
-;	 movf     unidades,W
-;	 call     tabla
-;	 movwf    uni_cod
-;	 movf     uni_cod,W
-;	 banksel  PORTD 
-;	 bsf	  PORTD,0
-;	 bsf	  PORTD,1
-;	 movwf    PORTC
-;	 bcf      PORTD,1
-;	 incf     unidades,F
-;	 banksel  PORTA
-;	 bcf      PORTA,0
-;	 goto     LOOP	
+;Seguir
+;	retfie	
 
 ; TABLA DE CONVERSION---------------------------------------------------------
 
@@ -196,6 +188,7 @@ tabla
 		RETLW	0x07		; Retorna con el código del 7
 		RETLW	0x7F		; Retorna con el código del 8
 		RETLW	0x67		; Retorna con el código del 9
+		RETLW   0x73        ; Retorna con el codigo de la P
 
 	INCLUDE     delay_ms.INC
 	END	
