@@ -25,7 +25,7 @@
 
 
 		CBLOCK
-		delay_temp
+		delay_tempms
 		ENDC
 
 
@@ -40,7 +40,7 @@
 
 delay_ms_0
         goto    $+1             ; 2 ins (A)
-        movwf   delay_temp      ; 1 ins (A)
+        movwf   delay_tempms      ; 1 ins (A)
         movlw   .60              ; 1 ins (A)
 
 delay_ms_loop
@@ -48,7 +48,7 @@ delay_ms_loop
         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
         goto    delay_ms_loop   ; 2 ins (C)
 
-        decf    delay_temp,F    ; 1 ins (A,B)
+        decf    delay_tempms,F    ; 1 ins (A,B)
         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
         return                  ; 2 ins (A)
 
@@ -71,7 +71,7 @@ delay_ms_loop
 ;; Total           = 500 * delay
 
 delay_ms_0
-        movwf   delay_temp      ; 1 ins (A)
+        movwf   delay_tempms      ; 1 ins (A)
         movlw   .123             ; 1 ins (A)
 
 delay_ms_loop
@@ -79,7 +79,7 @@ delay_ms_loop
         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
         goto    delay_ms_loop   ; 2 ins (C)
 
-        decf    delay_temp,F    ; 1 ins (A,B)
+        decf    delay_tempms,F    ; 1 ins (A,B)
         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
         return                  ; 2 ins (A)
 
@@ -103,7 +103,7 @@ delay_ms_loop
 ;; Total           = 1000 * delay
 
 delay_ms_0
-        movwf   delay_temp      ; 1 ins (A)
+        movwf   delay_tempms      ; 1 ins (A)
         movlw   .248             ; 1 ins (A)
 
 delay_ms_loop
@@ -111,7 +111,7 @@ delay_ms_loop
         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
         goto    delay_ms_loop   ; 2 ins (C)
 
-        decf    delay_temp,F    ; 1 ins (A,B)
+        decf    delay_tempms,F    ; 1 ins (A,B)
         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
         return                  ; 2 ins (A)
 
@@ -135,7 +135,7 @@ delay_ms_loop
 ;; Total           = 2000 * delay
 
 delay_ms_0
-        movwf   delay_temp      ; 1 ins (A)
+        movwf   delay_tempms      ; 1 ins (A)
         movlw   .249             ; 1 ins (A)
 
 delay_ms_loop
@@ -145,7 +145,7 @@ delay_ms_loop
         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
         goto    delay_ms_loop   ; 2 ins (C)
 
-        decf    delay_temp,F    ; 1 ins (A,B)
+        decf    delay_tempms,F    ; 1 ins (A,B)
         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
         return                  ; 2 ins (A)
 
@@ -169,7 +169,7 @@ delay_ms_loop
 ;; Total           = 4000 * delay
 
 delay_ms_0
-        movwf   delay_temp      ; 1 ins (A)
+        movwf   delay_tempms      ; 1 ins (A)
         movlw   .250             ; 1 ins (A)
         goto    delay_ms_entry_A; 2 ins (A)
 
@@ -186,7 +186,7 @@ delay_ms_entry_A
         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
         goto    delay_ms_loop   ; 2 ins (C)
 
-        decf    delay_temp,F    ; 1 ins (A,B)
+        decf    delay_tempms,F    ; 1 ins (A,B)
         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
         return                  ; 2 ins (A)
 
@@ -209,7 +209,7 @@ delay_ms_entry_A
 ;; Total           = 5000 * delay
 
 delay_ms_0
-        movwf   delay_temp      ; 1 ins (A)
+        movwf   delay_tempms      ; 1 ins (A)
         movlw   .250             ; 1 ins (A)
         goto    delay_ms_entry_A; 2 ins (A)
 
@@ -228,7 +228,7 @@ delay_ms_entry_A
         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
         goto    delay_ms_loop   ; 2 ins (C)
 
-        decf    delay_temp,F    ; 1 ins (A,B)
+        decf    delay_tempms,F    ; 1 ins (A,B)
         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
         return                  ; 2 ins (A)
 

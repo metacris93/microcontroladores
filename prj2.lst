@@ -1,4 +1,4 @@
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  1
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Warning[207]: Found label after column 1. (CLOCK)
   00000021            00010                 contador
   00000022            00011                 decenas
   00000023            00012                 unidades
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  2
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -116,7 +116,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00063 
 0022   1283 1303      00064         BANKSEL     TMR0                ;Selecciona el Bank0
 0024   30D9           00065         movlw           .217            ;Valor decimal 217      
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  3
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -175,7 +175,7 @@ Warning[203]: Found opcode in column 1. (GOTO)
 004B   30D8           00114         movlw   ~.39
 004C   0081           00115         movwf   TMR0                    ;Repone el TMR0 con ~.39
 004D   0009           00116         retfie
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  4
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -234,7 +234,7 @@ Message[305]: Using default destination of 1 (file).
 006F   0009           00163         retfie
                       00164 
 0070                  00165 victoria_decenas
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  5
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -293,7 +293,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00023 ;;
                       00024 ;;--------------------------------------------------------------------------------
                       00025 
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  6
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -301,7 +301,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 
                       00026 
                       00027                 CBLOCK
-  00000028            00028                 delay_temp
+  00000028            00028                 delay_tempms
                       00029                 ENDC
                       00030 
                       00031 
@@ -316,7 +316,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00040 
                       00041 delay_ms_0
                       00042         goto    $+1             ; 2 ins (A)
-                      00043         movwf   delay_temp      ; 1 ins (A)
+                      00043         movwf   delay_tempms      ; 1 ins (A)
                       00044         movlw   .60              ; 1 ins (A)
                       00045 
                       00046 delay_ms_loop
@@ -324,7 +324,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00048         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
                       00049         goto    delay_ms_loop   ; 2 ins (C)
                       00050 
-                      00051         decf    delay_temp,F    ; 1 ins (A,B)
+                      00051         decf    delay_tempms,F    ; 1 ins (A,B)
                       00052         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
                       00053         return                  ; 2 ins (A)
                       00054 
@@ -347,12 +347,12 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00071 ;; Total           = 500 * delay
                       00072 
                       00073 delay_ms_0
-                      00074         movwf   delay_temp      ; 1 ins (A)
+                      00074         movwf   delay_tempms      ; 1 ins (A)
                       00075         movlw   .123             ; 1 ins (A)
                       00076 
                       00077 delay_ms_loop
                       00078         addlw   -1              ; 1 ins (A,B,C)
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  7
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -361,7 +361,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00079         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
                       00080         goto    delay_ms_loop   ; 2 ins (C)
                       00081 
-                      00082         decf    delay_temp,F    ; 1 ins (A,B)
+                      00082         decf    delay_tempms,F    ; 1 ins (A,B)
                       00083         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
                       00084         return                  ; 2 ins (A)
                       00085 
@@ -385,7 +385,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00103 ;; Total           = 1000 * delay
                       00104 
 0081                  00105 delay_ms_0
-0081   00A8           00106         movwf   delay_temp      ; 1 ins (A)
+0081   00A8           00106         movwf   delay_tempms      ; 1 ins (A)
 0082   30F8           00107         movlw   .248             ; 1 ins (A)
                       00108 
 0083                  00109 delay_ms_loop
@@ -393,7 +393,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0084   1D03           00111         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
 0085   2???           00112         goto    delay_ms_loop   ; 2 ins (C)
                       00113 
-0086   03A8           00114         decf    delay_temp,F    ; 1 ins (A,B)
+0086   03A8           00114         decf    delay_tempms,F    ; 1 ins (A,B)
 0087   1903           00115         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
 0088   0008           00116         return                  ; 2 ins (A)
                       00117 
@@ -411,7 +411,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00129 
                       00130 ;; Timing analysis (at 8 MHz clock)
                       00131 ;; Load and call       =  3                     =     3
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  8
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -423,7 +423,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00135 ;; Total           = 2000 * delay
                       00136 
                       00137 delay_ms_0
-                      00138         movwf   delay_temp      ; 1 ins (A)
+                      00138         movwf   delay_tempms      ; 1 ins (A)
                       00139         movlw   .249             ; 1 ins (A)
                       00140 
                       00141 delay_ms_loop
@@ -433,7 +433,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00145         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
                       00146         goto    delay_ms_loop   ; 2 ins (C)
                       00147 
-                      00148         decf    delay_temp,F    ; 1 ins (A,B)
+                      00148         decf    delay_tempms,F    ; 1 ins (A,B)
                       00149         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
                       00150         return                  ; 2 ins (A)
                       00151 
@@ -457,7 +457,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00169 ;; Total           = 4000 * delay
                       00170 
                       00171 delay_ms_0
-                      00172         movwf   delay_temp      ; 1 ins (A)
+                      00172         movwf   delay_tempms      ; 1 ins (A)
                       00173         movlw   .250             ; 1 ins (A)
                       00174         goto    delay_ms_entry_A; 2 ins (A)
                       00175 
@@ -470,7 +470,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00182         goto    $+1             ; 2 ins (B,C)
                       00183 delay_ms_entry_A
                       00184         goto    $+1             ; 2 ins (A,B,C)
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE  9
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -480,7 +480,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00186         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
                       00187         goto    delay_ms_loop   ; 2 ins (C)
                       00188 
-                      00189         decf    delay_temp,F    ; 1 ins (A,B)
+                      00189         decf    delay_tempms,F    ; 1 ins (A,B)
                       00190         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
                       00191         return                  ; 2 ins (A)
                       00192 
@@ -503,7 +503,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00209 ;; Total           = 5000 * delay
                       00210 
                       00211 delay_ms_0
-                      00212         movwf   delay_temp      ; 1 ins (A)
+                      00212         movwf   delay_tempms      ; 1 ins (A)
                       00213         movlw   .250             ; 1 ins (A)
                       00214         goto    delay_ms_entry_A; 2 ins (A)
                       00215 
@@ -522,14 +522,14 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00228         btfss   STATUS,Z        ; 1 ins (C) / 2 ins (A,B)
                       00229         goto    delay_ms_loop   ; 2 ins (C)
                       00230 
-                      00231         decf    delay_temp,F    ; 1 ins (A,B)
+                      00231         decf    delay_tempms,F    ; 1 ins (A,B)
                       00232         btfsc   STATUS,Z        ; 2 ins (B) / 1 ins (A)
                       00233         return                  ; 2 ins (A)
                       00234 
                       00235         nop                     ; 1 ins (B)
                       00236         movlw   .250             ; 1 ins (B)
                       00237         goto    delay_ms_entry_B; 2 ins (B)
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 10
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -541,7 +541,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00241 
                       00242 ;;--------------------------------------------------------------------------------
 3FF0                  00194         END     
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 11
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 11
 
 
 SYMBOL TABLE
@@ -600,7 +600,7 @@ BRG6                              00000006
 BRG7                              00000007
 BRG8                              00000000
 BRG9                              00000001
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 12
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 12
 
 
 SYMBOL TABLE
@@ -659,7 +659,7 @@ CHS0                              00000002
 CHS1                              00000003
 CHS2                              00000004
 CHS3                              00000005
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 13
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 13
 
 
 SYMBOL TABLE
@@ -718,7 +718,7 @@ INDF                              00000000
 INTCON                            0000000B
 INTE                              00000004
 INTEDG                            00000006
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 14
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 14
 
 
 SYMBOL TABLE
@@ -777,7 +777,7 @@ OSFIF                             00000007
 OSTS                              00000003
 P                                 00000004
 P1M0                              00000006
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 15
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 15
 
 
 SYMBOL TABLE
@@ -836,7 +836,7 @@ RB4                               00000004
 RB5                               00000005
 RB6                               00000006
 RB7                               00000007
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 16
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 16
 
 
 SYMBOL TABLE
@@ -895,7 +895,7 @@ SPEN                              00000007
 SR0                               00000006
 SR1                               00000007
 SRCON                             00000185
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 17
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 17
 
 
 SYMBOL TABLE
@@ -954,7 +954,7 @@ TMR1ON                            00000000
 TMR2                              00000011
 TMR2IE                            00000001
 TMR2IF                            00000001
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 18
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 18
 
 
 SYMBOL TABLE
@@ -1013,7 +1013,7 @@ TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
 TX8_9                             00000006
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 19
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 19
 
 
 SYMBOL TABLE
@@ -1072,7 +1072,7 @@ _BOREN_NSLEEP                     00003EFF
 _BOREN_OFF                        00003CFF
 _BOREN_ON                         00003FFF
 _BOREN_SBODEN                     00003DFF
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 20
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 20
 
 
 SYMBOL TABLE
@@ -1131,7 +1131,7 @@ _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
 _WRT_256                          00003DFF
 _WRT_HALF                         000039FF
-MPASM  5.51                          PRJ2.ASM   7-7-2016  20:59:35         PAGE 21
+MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 21
 
 
 SYMBOL TABLE
@@ -1147,7 +1147,7 @@ decenas                           00000022
 decrement                         00000063
 delay_ms_0                        00000081
 delay_ms_loop                     00000083
-delay_temp                        00000028
+delay_tempms                      00000028
 derrota_decenas                   0000006B
 derrota_unidades                  0000006D
 etiqueta_decenas                  0000003F
