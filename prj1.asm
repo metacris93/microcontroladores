@@ -16,6 +16,8 @@
 		tempTMR0
 		aciertos   ; lleva la cuenta de los aciertos del jugador
 		nivel 	   ; lleva el numero de niveles del jugador
+		fallidos   ; cuenta de las veces que falla el jugador
+		victoria   ; esta variable determina si gano la partida
 	ENDC
 
 	   org	0x00		     	; vector de reset
@@ -30,8 +32,8 @@ INTERRUPCION
 	;Aqui verifica si se activo alguno de los pines del puertoB  				
 	BTFSC		INTCON, RBIF	;Salta a una funcion de interrupcion			
 	GOTO		INTRB			;dependiendo de cual bandera se activo
-	;BTFSC		INTCON,T0IF		;RBIF -> Bandera de cambio de estado del PORTB	
-	;GOTO		INTTMR0			;T0IF -> Bandera de desbordamiento del TMR0		
+	BTFSC		INTCON,T0IF		;RBIF -> Bandera de cambio de estado del PORTB	
+	GOTO		INTTMR0			;T0IF -> Bandera de desbordamiento del TMR0		
 	RETFIE																		
 ;-----------------------------Interrupcion del PORTB-----------------------------
 INTRB
@@ -51,9 +53,11 @@ INTRB
 	GOTO		label6															
 	BTFSC		PORTB,7															
 	GOTO		label7
+
 FINISH
 	bcf     INTCON, RBIF
-	movlw   .5
+	movf    aciertos,W ; de prueba hay que borrarlo
+	movlw   .2         ; era 5 pero en la sustentacion subo de nivel por 2 aciertos
 	xorwf   aciertos,W
 	btfss    STATUS,2
 	retfie
@@ -61,31 +65,217 @@ FINISH
 	clrf    aciertos
 	RETFIE
 
+;*****************************************************************************************************
+label0
+	clrf   PORTA
+	movlw  0x00
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	clrf   fallidos
+	incf   aciertos,F
+	movlw  b'00000001'	
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x04
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo   
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+label1
+	clrf   PORTA
+	movlw  0x01
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	clrf   fallidos
+	incf   aciertos,F
+	movlw  b'00000001'	
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x05
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+label2
+	clrf   PORTA
+	movlw  0x02
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	clrf   fallidos
+	incf   aciertos,F
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x06
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+label3
+	clrf   PORTA
+	movlw  0x03
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	clrf   fallidos
+	incf   aciertos,F
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x07
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+label4
+	clrf   PORTA
+	movlw  0x08
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	clrf   fallidos
+	incf   aciertos,F
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x0C
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+label5
+	clrf   PORTA
+	movlw  0x09
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	clrf   fallidos
+	incf   aciertos,F
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x0D
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+label6
+	clrf   PORTA
+	movlw  0x0A
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	incf   aciertos,F
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x0E
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+label7
+	clrf   PORTA
+	movlw  0x0B
+	xorwf  topo, W
+	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
+	goto   $+7
+	clrf   fallidos
+	incf   aciertos,F
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   PORTB
+	GOTO   FINISH
+	movlw  0x0F
+	xorwf  topo, W
+	btfss  STATUS, 2
+	goto   no_acerto_topo
+	movlw  b'00000001'
+	movwf  PORTA
+	clrf   fallidos
+	clrf   PORTB
+	incf   aciertos,F
+	GOTO   FINISH
+;*********************************************************************************
+
+
+no_acerto_topo
+	movlw  b'00000010'
+	movwf  PORTA
+	incf   fallidos  ; nueva linea	
+	clrf   aciertos
+	GOTO   FINISH
+
 ;------------------------------Interrupcion del TMR0----------------------------
 ;Genera una onda cuadrada a traves del pin RE2									
 ;El frecuencia de la onda cuadrada dependerá del sonido a emitir				
-;INTTMR0																			
-;	BCF			INTCON,T0IF		;se encera la bandera del TMR0					
-;	BTFSC		PORTE,2			;verifica el valor anterior de RE2,				
-;	GOTO		hacer0			;si estaba en alto lo pasa a bajo y viceversa	
-;	BSF			PORTE,2															
-;	MOVF		tempTMR0,w		;tempTMR0 es una variable que almacena el		
-;	MOVWF		TMR0			;valor inicial que debe tener el TMR0			
-;	RETFIE						;para que genere una interrupción cada 			
-;hacer0							;semiperiodo de la nota musical a emitir		
-;	BCF			PORTE,2															
-;	MOVF		tempTMR0,w														
-;	MOVWF		TMR0															
-;	RETFIE
+INTTMR0																			
+	BCF			INTCON,T0IF		;se encera la bandera del TMR0					
+	BTFSC		PORTE,2			;verifica el valor anterior de RE2,				
+	GOTO		hacer0			;si estaba en alto lo pasa a bajo y viceversa	
+	BSF			PORTE,2															
+	MOVF		tempTMR0,w		;tempTMR0 es una variable que almacena el		
+	MOVWF		TMR0			;valor inicial que debe tener el TMR0			
+	RETFIE						;para que genere una interrupción cada 			
+hacer0							;semiperiodo de la nota musical a emitir		
+	BCF			PORTE,2															
+	MOVF		tempTMR0,w														
+	MOVWF		TMR0															
+	RETFIE
 	
 ;***************************************************************************
 ;****                                MAIN                                ***
 ;***************************************************************************
 MAIN
 ;*************************     SETEO DE PUERTOS	   *************************
-	BANKSEL 	INTCON														
-	;MOVLW		0X01															
-	;MOVWF		OPTION_REG
+	BANKSEL 	OPTION_REG														
+	MOVLW		0X01															
+	MOVWF		OPTION_REG
 	MOVLW		0X88															
 	MOVWF		INTCON	;HABILITA INTERRUP. POR CAMBIO DE ESTADO PORTB
 	BANKSEL 	TRISA
@@ -109,8 +299,18 @@ MAIN
     clrf		PORTD
 	CLRF		PORTE
 ;****************************************************************************
-
+;********			RETARDO PARA GENERAR EL SONIDO				*************
+;****************************************************************************
+	BSF			INTCON,T0IE														
+	CALL		DO																
+	Delay_s .1														
+	CALL		RE																
+	Delay_s .1
+	BCF 		INTCON,T0IE
+	Delay_s .2
+;****************************************************************************
 ;**********************	INICIALIZACION DE VARIABLES *************************
+;****************************************************************************
 	movlw   .5
 	movwf   dato
 	MOVLW	.4
@@ -120,6 +320,8 @@ MAIN
 	movlw   .1
 	movwf   nivel
 	clrf    aciertos
+	clrf    fallidos
+	clrf    victoria
 ;****************************************************************************
 
 encendido_de_leds
@@ -236,6 +438,10 @@ multiplicacion
 	goto    sector1
 
 generando_aleatorio	
+	movlw  .3  ; era con 8 pero en la sustentacion lo cambie a 3 
+	xorwf  fallidos,W
+	btfsc  STATUS,2
+	GOTO   perdio_partida
 	decfsz aleatorio, F ;aleatorio = aleatorio - 1
 	goto   incrementando_dato
 	movf   dato , W
@@ -269,15 +475,39 @@ llamar_delay_2s
 				goto generando_aleatorio
 
 llamar_delay_1s
- 				Delay_s .1
+ 				;Delay_s .1
+				Delay_s .2
 				goto generando_aleatorio
 
 llamar_delay_ms
-				Delay_ms .255
-				Delay_ms .255
+				movlw .2 ; era 5 pero en la sustentacion subo de nivel por 2 aciertos
+				xorwf aciertos,W
+				btfsc STATUS,2
+				goto gano_partida
+				;Delay_ms .255
+				;Delay_ms .255
+				Delay_s .2
 				goto generando_aleatorio
-;***********************************************************************************************
 
+;***********************************************************************************************
+; Cuando el jugador pierde, la partida se termina mostrando en el display PD
+perdio_partida
+	BSF			INTCON,T0IE
+	CALL		RE																
+	Delay_s     .1
+	BCF			INTCON,T0IE
+lazo_infinito_perdida
+	nop
+GOTO lazo_infinito_perdida
+;***********************************************************************************************
+gano_partida
+	BSF			INTCON,T0IE
+	CALL		RE																
+	Delay_s     .1
+	BCF			INTCON,T0IE
+lazo_infinito_victoria
+	nop
+GOTO lazo_infinito_victoria
 ;***********************************************************************************************
 sector1
 	nop
@@ -391,168 +621,7 @@ sector16
 	movlw   b'11111100'	
 	movwf	PORTC
 	goto lazo
-;*****************************************************************************************************
 
-;*****************************************************************************************************
-label0
-	clrf   PORTA
-	movlw  0x00
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'	
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x04
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo   
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-label1
-	clrf   PORTA
-	movlw  0x01
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'	
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x05
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-label2
-	clrf   PORTA
-	movlw  0x02
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x06
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-label3
-	clrf   PORTA
-	movlw  0x03
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x07
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-label4
-	clrf   PORTA
-	movlw  0x08
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x0C
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-label5
-	clrf   PORTA
-	movlw  0x09
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x0D
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-label6
-	clrf   PORTA
-	movlw  0x0A
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x0E
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-label7
-	clrf   PORTA
-	movlw  0x0B
-	xorwf  topo, W
-	btfss  STATUS, 2  ;si el bit 2 del registro STATUS es 1 entonces el resultado de la operacion XOR es cero
-	goto   $+6
-	incf   aciertos,F
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-	movlw  0x0F
-	xorwf  topo, W
-	btfss  STATUS, 2
-	goto   no_acerto_topo
-	movlw  b'00000001'
-	movwf  PORTA
-	clrf   PORTB
-	GOTO   FINISH
-;*********************************************************************************
-
-no_acerto_topo
-	movlw  b'00000010'
-	movwf  PORTA
-	clrf   aciertos
-	GOTO   FINISH
 
 ;*********************************************************************************
 ;------------------------------SUBRUTINAS MUSICALES-----------------------------;*
@@ -604,28 +673,6 @@ do																				;*
 	MOVWF	TMR0																;*
 	MOVWF	tempTMR0															;*
 	RETURN
-
-;MUSIC1																			;*
-;	BSF			INTCON,T0IE														;*
-;	CALL		DO																;*
-;	Delay_s .1														;*
-;	CALL		RE																;*
-;	Delay_s .1														;*
-;	CALL		MI																;*
-;	Delay_s .1														;*
-	;CALL		FA																;*
-	;Delay_s .1														;*
-	;CALL		SOL																;*
-	;Delay_s .1														;*
-	;CALL		LA																;*
-	;Delay_s .1														;*
-	;CALL		SI																;*
-	;Delay_s .1														;*
-	;CALL		do																;*
-	;Delay_s .1														;*
-																				
-;	BCF			INTCON,T0IE
-;	GOTO encendido_de_leds;main ;encendido_de_leds
 
 	INCLUDE     delay_s.INC
 	INCLUDE     delay_ms.INC	

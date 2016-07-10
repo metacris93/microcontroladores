@@ -1,4 +1,4 @@
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  1
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Warning[207]: Found label after column 1. (CLOCK)
   00000021            00010                 contador
   00000022            00011                 decenas
   00000023            00012                 unidades
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  2
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -116,7 +116,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00063 
 0022   1283 1303      00064         BANKSEL     TMR0                ;Selecciona el Bank0
 0024   30D9           00065         movlw           .217            ;Valor decimal 217      
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  3
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -175,7 +175,7 @@ Warning[203]: Found opcode in column 1. (GOTO)
 004B   30D8           00114         movlw   ~.39
 004C   0081           00115         movwf   TMR0                    ;Repone el TMR0 con ~.39
 004D   0009           00116         retfie
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  4
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -199,7 +199,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0054   100B           00129         bcf     INTCON,0            
 0055   01A7           00130         clrf    intentos
 0056   0AA3           00131         INCF    unidades,f      
-0057   3005           00132         movlw   .5
+0057   3002           00132         movlw   .2   ; era 5 pero en la sustentacion subo de nivel por 2 aciertos
 0058   0223           00133         subwf   unidades,w
 0059   1D03           00134         btfss   STATUS,2
 005A   0009           00135         retfie;goto     fin_RB0
@@ -216,7 +216,7 @@ Message[305]: Using default destination of 1 (file).
 0063                  00145 decrement
 0063   100B           00146         bcf   INTCON,0          
 0064   0AA7           00147         incf  intentos,F
-0065   3008           00148         movlw .8
+0065   3003           00148         movlw .3  ; era con 8 pero en la sustentacion lo cambie a 3 
 0066   0227           00149         subwf intentos,W
 0067   1903           00150         btfsc STATUS,2
 0068   2???           00151         goto  derrota_decenas   
@@ -234,7 +234,7 @@ Message[305]: Using default destination of 1 (file).
 006F   0009           00163         retfie
                       00164 
 0070                  00165 victoria_decenas
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  5
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -293,7 +293,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00023 ;;
                       00024 ;;--------------------------------------------------------------------------------
                       00025 
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  6
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -352,7 +352,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00076 
                       00077 delay_ms_loop
                       00078         addlw   -1              ; 1 ins (A,B,C)
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  7
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -411,7 +411,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00129 
                       00130 ;; Timing analysis (at 8 MHz clock)
                       00131 ;; Load and call       =  3                     =     3
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  8
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -470,7 +470,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00182         goto    $+1             ; 2 ins (B,C)
                       00183 delay_ms_entry_A
                       00184         goto    $+1             ; 2 ins (A,B,C)
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE  9
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -529,7 +529,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00235         nop                     ; 1 ins (B)
                       00236         movlw   .250             ; 1 ins (B)
                       00237         goto    delay_ms_entry_B; 2 ins (B)
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 10
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -541,7 +541,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00241 
                       00242 ;;--------------------------------------------------------------------------------
 3FF0                  00194         END     
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 11
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 11
 
 
 SYMBOL TABLE
@@ -600,7 +600,7 @@ BRG6                              00000006
 BRG7                              00000007
 BRG8                              00000000
 BRG9                              00000001
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 12
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 12
 
 
 SYMBOL TABLE
@@ -659,7 +659,7 @@ CHS0                              00000002
 CHS1                              00000003
 CHS2                              00000004
 CHS3                              00000005
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 13
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 13
 
 
 SYMBOL TABLE
@@ -718,7 +718,7 @@ INDF                              00000000
 INTCON                            0000000B
 INTE                              00000004
 INTEDG                            00000006
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 14
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 14
 
 
 SYMBOL TABLE
@@ -777,7 +777,7 @@ OSFIF                             00000007
 OSTS                              00000003
 P                                 00000004
 P1M0                              00000006
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 15
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 15
 
 
 SYMBOL TABLE
@@ -836,7 +836,7 @@ RB4                               00000004
 RB5                               00000005
 RB6                               00000006
 RB7                               00000007
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 16
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 16
 
 
 SYMBOL TABLE
@@ -895,7 +895,7 @@ SPEN                              00000007
 SR0                               00000006
 SR1                               00000007
 SRCON                             00000185
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 17
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 17
 
 
 SYMBOL TABLE
@@ -954,7 +954,7 @@ TMR1ON                            00000000
 TMR2                              00000011
 TMR2IE                            00000001
 TMR2IF                            00000001
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 18
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 18
 
 
 SYMBOL TABLE
@@ -1013,7 +1013,7 @@ TUN2                              00000002
 TUN3                              00000003
 TUN4                              00000004
 TX8_9                             00000006
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 19
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 19
 
 
 SYMBOL TABLE
@@ -1072,7 +1072,7 @@ _BOREN_NSLEEP                     00003EFF
 _BOREN_OFF                        00003CFF
 _BOREN_ON                         00003FFF
 _BOREN_SBODEN                     00003DFF
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 20
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 20
 
 
 SYMBOL TABLE
@@ -1131,7 +1131,7 @@ _WDT_ON                           00003FFF
 _WRT_1FOURTH                      00003BFF
 _WRT_256                          00003DFF
 _WRT_HALF                         000039FF
-MPASM  5.51                          PRJ2.ASM   7-7-2016  22:51:09         PAGE 21
+MPASM  5.51                          PRJ2.ASM   7-8-2016  13:49:20         PAGE 21
 
 
 SYMBOL TABLE

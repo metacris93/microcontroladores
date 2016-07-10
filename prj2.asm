@@ -129,7 +129,7 @@ increment
 	bcf 	INTCON,0	    
 	clrf    intentos
 	INCF 	unidades,f	
-	movlw	.5
+	movlw	.2   ; era 5 pero en la sustentacion subo de nivel por 2 aciertos
 	subwf	unidades,w
 	btfss	STATUS,2
 	retfie;goto	fin_RB0
@@ -145,7 +145,7 @@ increment
 decrement
 	bcf   INTCON,0		
 	incf  intentos,F
-	movlw .8
+	movlw .3  ; era con 8 pero en la sustentacion lo cambie a 3 
 	subwf intentos,W
 	btfsc STATUS,2
 	goto  derrota_decenas	
